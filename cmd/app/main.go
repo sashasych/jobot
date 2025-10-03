@@ -23,6 +23,12 @@ func main() {
 		log.Fatal("Failed to create application", zap.Error(err))
 	}
 
+	err = appl.Initialize(ctx)
+	if err != nil {
+		cancel()
+		log.Fatal("Failed to initialize application", zap.Error(err))
+	}
+
 	wg := sync.WaitGroup{}
 
 	appl.Start(ctx, &wg, cancel)

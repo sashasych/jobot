@@ -10,12 +10,12 @@ import (
 
 // Config содержит настройки подключения к PostgreSQL
 type Config struct {
-	Host     string
-	Port     string
-	User     string
-	Password string
-	DBName   string
-	SSLMode  string
+	Host     string `envconfig:"HOST" default:"localhost"`
+	Port     string `envconfig:"PORT" default:"5432"`
+	User     string `envconfig:"USER" default:"postgres"`
+	Password string `envconfig:"PASSWORD" default:"postgres"`
+	DBName   string `envconfig:"NAME" default:"postgres"`
+	SSLMode  string `envconfig:"SSLMODE" default:"disable"`
 }
 
 // NewPostgresPool создает пул соединений к PostgreSQL

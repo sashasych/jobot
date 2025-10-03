@@ -10,19 +10,19 @@ import (
 // Config - основная конфигурация приложения
 type Config struct {
 	// HTTP Server конфигурация
-	HTTP HTTPConfig `env:", prefix=HTTP_"`
+	HTTP HTTPConfig `env:"HTTP"`
 
 	// Database конфигурация
-	Database database.Config `env:", prefix=DB_"`
+	Database database.Config `envconfig:"DB"`
 
 	// Logger конфигурация
-	Logger logger.Config `env:", prefix=LOG_"`
+	Logger logger.Config `env:"LOG"`
 
 	// Application конфигурация
-	App AppConfig `env:", prefix=APP_"`
+	App AppConfig `envconfig:"APP"`
 
 	// JWT конфигурация (для будущей аутентификации)
-	JWT JWTConfig `env:", prefix=JWT_"`
+	//JWT JWTConfig `env:", prefix=JWT_"`
 }
 
 // HTTPConfig - конфигурация HTTP сервера

@@ -29,18 +29,20 @@ func NewUserRepository(db *pgxpool.Pool) *UserRepository {
 // CreateUser создает нового пользователя в БД
 func (r *UserRepository) CreateUser(ctx context.Context, user *models.User) error {
 	query := `
-		INSERT INTO users (id, email, password_hash, is_active, created_at, updated_at)
-		VALUES ($1, $2, $3, $4, $5, $6)
+		INSERT INTO users (id, email, password_hash, first_name, last_name, is_active, created_at, updated_at)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
 	`
 
-	user.ID = uuid.New()
-	user.CreatedAt = time.Now()
-	user.UpdatedAt = time.Now()
+	//user.ID = uuid.New()
+	//user.CreatedAt = time.Now()
+	//user.UpdatedAt = time.Now()
 
 	_, err := r.db.Exec(ctx, query,
 		user.ID,
 		user.Email,
 		user.PasswordHash,
+		user.FirstName,
+		user.LastName,
 		user.IsActive,
 		user.CreatedAt,
 		user.UpdatedAt,
@@ -60,7 +62,7 @@ func (r *UserRepository) CreateUser(ctx context.Context, user *models.User) erro
 // GetUserByID получает пользователя по ID
 func (r *UserRepository) GetUserByID(ctx context.Context, id uuid.UUID) (*models.User, error) {
 	query := `
-		SELECT id, email, password_hash, is_active, created_at, updated_at
+		SELECT id, email, password_hash, first_name, last_name, is_active, created_at, updated_at
 		FROM users
 		WHERE id = $1
 	`
@@ -70,6 +72,8 @@ func (r *UserRepository) GetUserByID(ctx context.Context, id uuid.UUID) (*models
 		&user.ID,
 		&user.Email,
 		&user.PasswordHash,
+		&user.FirstName,
+		&user.LastName,
 		&user.IsActive,
 		&user.CreatedAt,
 		&user.UpdatedAt,
@@ -88,7 +92,7 @@ func (r *UserRepository) GetUserByID(ctx context.Context, id uuid.UUID) (*models
 // GetUserByEmail получает пользователя по email
 func (r *UserRepository) GetUserByEmail(ctx context.Context, email string) (*models.User, error) {
 	query := `
-		SELECT id, email, password_hash, is_active, created_at, updated_at
+		SELECT id, email, password_hash, first_name, last_name, is_active, created_at, updated_at
 		FROM users
 		WHERE email = $1
 	`
@@ -98,6 +102,8 @@ func (r *UserRepository) GetUserByEmail(ctx context.Context, email string) (*mod
 		&user.ID,
 		&user.Email,
 		&user.PasswordHash,
+		&user.FirstName,
+		&user.LastName,
 		&user.IsActive,
 		&user.CreatedAt,
 		&user.UpdatedAt,
@@ -117,7 +123,7 @@ func (r *UserRepository) GetUserByEmail(ctx context.Context, email string) (*mod
 func (r *UserRepository) UpdateUser(ctx context.Context, user *models.User) error {
 	query := `
 		UPDATE users
-		SET email = $2, password_hash = $3, is_active = $4, updated_at = $5
+		SET email = $2, password_hash = $3, first_name = $4, last_name = $5, is_active = $6, updated_at = $7
 		WHERE id = $1
 	`
 
@@ -127,6 +133,8 @@ func (r *UserRepository) UpdateUser(ctx context.Context, user *models.User) erro
 		user.ID,
 		user.Email,
 		user.PasswordHash,
+		user.FirstName,
+		user.LastName,
 		user.IsActive,
 		user.UpdatedAt,
 	)
