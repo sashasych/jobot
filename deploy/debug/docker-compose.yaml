@@ -1,0 +1,54 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: jobotdb_container
+    environment:
+      POSTGRES_DB: jobot
+      POSTGRES_USER: asych
+      POSTGRES_PASSWORD: qwerty
+      PGDATA: /var/lib/postgresql/data/pgdata
+      # POSTGRES_HOST_AUTH_METHOD: trust  # Для разработки, в продакшене уберите
+    ports:
+      - "5435:5432"  # Внешний порт 5435, внутренний 5432
+    volumes:
+      - jobot-data:/var/lib/postgresql/data/pgdata  # Используем именованный volume с правильным путем
+      #- ./init-scripts:/docker-entrypoint-initdb.d  # Для SQL скриптов инициализации
+    networks:
+      - postgres
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U asych -d jobot -p 5432"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+  
+  pgadmin:
+    container_name: pgadmin_container
+    image: dpage/pgadmin4:7.2
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "asych@jobot.com"
+      PGADMIN_DEFAULT_PASSWORD: "qwerty"
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    ports:
+      - "5050:80"
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy  # Ждем, пока PostgreSQL будет готов
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+    networks:
+      - postgres
+
+volumes:
+  jobot-data:
+  pgadmin-data:
+
+networks:
+  postgres:
+    driver: bridge
