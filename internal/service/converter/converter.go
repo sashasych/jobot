@@ -17,6 +17,8 @@ func ServiceUserToRepositoryUser(user *srvModels.User) *repoModels.User {
 		ID:           user.ID,
 		Email:        user.Email,
 		PasswordHash: string(hashedPassword),
+		FirstName:    user.FirstName,
+		LastName:     user.LastName,
 		IsActive:     user.IsActive,
 		CreatedAt:    user.CreatedAt,
 		UpdatedAt:    user.UpdatedAt,

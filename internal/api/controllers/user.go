@@ -163,7 +163,8 @@ func (c *UserController) handleUserServiceError(w http.ResponseWriter, err error
 }
 
 func getUserUUID(r *http.Request) (uuid.UUID, error) {
-	id, err := uuid.Parse(r.URL.Query().Get("user_id"))
+	//id, err := uuid.Parse(r.URL.Query().Get("UserID"))
+	id, err := uuid.Parse(r.PathValue("UserID"))
 	if err != nil {
 		return uuid.Nil, fmt.Errorf("invalid user id: %w", err)
 	}

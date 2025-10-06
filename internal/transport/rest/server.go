@@ -20,8 +20,17 @@ type ConfigHTTPServer struct {
 	Host string
 }
 
+type HandlersConfig struct {
+	UserController     api.UserController
+	EmployeeController api.EmployeeController
+	ResumeController   api.ResumeController
+	EmployerController api.EmployerController
+	VacancyController  api.VacancyController
+	ReactionController api.ReactionController
+}
+
 // CreateHTTPServerWithChi creates HTTP server with Chi router
-func CreateHTTPServerWithChi(ctx context.Context, cfg *ConfigHTTPServer, usersController api.UserController) *http.Server {
+func CreateHTTPServerWithChi(ctx context.Context, cfg *ConfigHTTPServer, handlersConfig *HandlersConfig) *http.Server {
 	r := chi.NewRouter()
 
 	// Basic middleware
@@ -42,9 +51,6 @@ func CreateHTTPServerWithChi(ctx context.Context, cfg *ConfigHTTPServer, usersCo
 		MaxAge:           300,
 	}))
 
-	// Initialize controllers
-	//usersController := controllers.NewUsersController(ctx, userService)
-
 	// Health check endpoint
 	r.Get("/health", func(w http.ResponseWriter, r *http.Request) {
 		render.JSON(w, r, map[string]string{
@@ -57,65 +63,67 @@ func CreateHTTPServerWithChi(ctx context.Context, cfg *ConfigHTTPServer, usersCo
 	r.Route("/api", func(r chi.Router) {
 		// User routes
 		r.Route("/user", func(r chi.Router) {
-			r.Post("/", usersController.CreateUser)
-			//r.Get("/", usersController.GetListUser)
-			r.Put("/", usersController.UpdateUser)
+			r.Post("/", handlersConfig.UserController.CreateUser)
+			r.Put("/", handlersConfig.UserController.UpdateUser)
 
 			r.Route("/{UserID}", func(r chi.Router) {
-				r.Get("/", usersController.GetUser)
-				r.Delete("/", usersController.DeleteUser)
+				r.Get("/", handlersConfig.UserController.GetUser)
+				r.Delete("/", handlersConfig.UserController.DeleteUser)
 			})
 		})
 
-		/*
-			// Employee routes
-			r.Route("/employee", func(r chi.Router) {
-				r.Post("/", usersController.CreateEmployee)
-				r.Get("/", usersController.GetListEmployee)
+		// Employee routes
+		r.Route("/employee", func(r chi.Router) {
+			r.Post("/", handlersConfig.EmployeeController.CreateEmployee)
 
-				r.Route("/{EmployeeID}", func(r chi.Router) {
-					r.Get("/", usersController.GetEmployee)
-					r.Put("/", usersController.UpdateEmployee)
-					r.Delete("/", usersController.DeleteEmployee)
-				})
+			r.Route("/{EmployeeID}", func(r chi.Router) {
+				r.Get("/reactions", handlersConfig.EmployeeController.GetEmployeeListReactions)
+				r.Get("/", handlersConfig.EmployeeController.GetEmployee)
+				r.Put("/", handlersConfig.EmployeeController.UpdateEmployee)
+				r.Delete("/", handlersConfig.EmployeeController.DeleteEmployee)
 			})
+		})
 
-			// Resume routes
-			r.Route("/resumes", func(r chi.Router) {
-				r.Post("/", usersController.CreateResume)
-				r.Get("/user/{EmployeeID}", usersController.GetEmployeeListResume)
+		// Resume routes
+		r.Route("/resumes", func(r chi.Router) {
+			r.Post("/", handlersConfig.ResumeController.CreateResume)
+			r.Get("/user/{EmployeeID}", handlersConfig.ResumeController.GetEmployeeListResumes)
 
-				r.Route("/{ResumeID}", func(r chi.Router) {
-					r.Get("/", usersController.GetResume)
-					r.Put("/", usersController.UpdateResume)
-					r.Delete("/", usersController.DeleteResume)
-				})
+			r.Route("/{ResumeID}", func(r chi.Router) {
+				r.Get("/", handlersConfig.ResumeController.GetResume)
+				r.Put("/", handlersConfig.ResumeController.UpdateResume)
+				r.Delete("/", handlersConfig.ResumeController.DeleteResume)
 			})
+		})
 
-			// Employer routes
-			r.Route("/employer", func(r chi.Router) {
-				r.Post("/", usersController.CreateEmployer)
-				r.Get("/", usersController.GetListEmployer)
+		// Employer routes
+		r.Route("/employer", func(r chi.Router) {
+			r.Post("/", handlersConfig.EmployerController.CreateEmployer)
 
-				r.Route("/{EmployerID}", func(r chi.Router) {
-					r.Get("/", usersController.GetEmployer)
-					r.Put("/", usersController.UpdateEmployer)
-					r.Delete("/", usersController.DeleteEmployer)
-				})
+			r.Route("/{EmployerID}", func(r chi.Router) {
+				r.Get("/", handlersConfig.EmployerController.GetEmployer)
+				r.Get("/vacansies", handlersConfig.EmployerController.GetEmployerListVacansies)
+				r.Put("/", handlersConfig.EmployerController.UpdateEmployer)
+				r.Delete("/", handlersConfig.EmployerController.DeleteEmployer)
 			})
+		})
 
-			// Job posting routes (vacansies)
-			r.Route("/vacansies", func(r chi.Router) {
-				r.Post("/", usersController.CreateVacansie)
-				r.Get("/employer/{EmployerID}", usersController.GetEmployerListVacansie)
+		// Job posting routes (vacansies)
+		r.Route("/vacansies", func(r chi.Router) {
+			r.Post("/", handlersConfig.VacancyController.CreateVacansy)
+			r.Get("/", handlersConfig.VacancyController.GetVacansyList)
 
-				r.Route("/{VacansieID}", func(r chi.Router) {
-					r.Get("/", usersController.GetVacansie)
-					r.Put("/", usersController.UpdateVacansie)
-					r.Delete("/", usersController.DeleteVacansie)
-				})
+			r.Route("/{VacansieID}", func(r chi.Router) {
+				r.Get("/", handlersConfig.VacancyController.GetVacansy)
+				r.Put("/", handlersConfig.VacancyController.UpdateVacansy)
+				r.Delete("/", handlersConfig.VacancyController.DeleteVacansy)
 			})
-		*/
+		})
+
+		// Reaction routes
+		r.Route("/reactions", func(r chi.Router) {
+			r.Post("/", handlersConfig.ReactionController.CreateReaction)
+		})
 	})
 
 	// Print all registered routes (for debugging)

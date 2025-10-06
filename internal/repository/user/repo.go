@@ -89,36 +89,7 @@ func (r *UserRepository) GetUserByID(ctx context.Context, id uuid.UUID) (*models
 	return user, nil
 }
 
-// GetUserByEmail получает пользователя по email
-func (r *UserRepository) GetUserByEmail(ctx context.Context, email string) (*models.User, error) {
-	query := `
-		SELECT id, email, password_hash, first_name, last_name, is_active, created_at, updated_at
-		FROM users
-		WHERE email = $1
-	`
-
-	user := &models.User{}
-	err := r.db.QueryRow(ctx, query, email).Scan(
-		&user.ID,
-		&user.Email,
-		&user.PasswordHash,
-		&user.FirstName,
-		&user.LastName,
-		&user.IsActive,
-		&user.CreatedAt,
-		&user.UpdatedAt,
-	)
-
-	if err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, ErrUserNotFound
-		}
-		return nil, fmt.Errorf("failed to get user by email: %w", err)
-	}
-
-	return user, nil
-}
-
+// TODO: менять только поля из запроса
 // UpdateUser обновляет данные пользователя
 func (r *UserRepository) UpdateUser(ctx context.Context, user *models.User) error {
 	query := `
@@ -170,58 +141,4 @@ func (r *UserRepository) DeleteUser(ctx context.Context, id uuid.UUID) error {
 	}
 
 	return nil
-}
-
-// CreateUserRole создает роль для пользователя
-func (r *UserRepository) CreateUserRole(ctx context.Context, userRole *models.UserRole) error {
-	query := `
-		INSERT INTO user_roles (id, user_id, role, created_at)
-		VALUES ($1, $2, $3, $4)
-	`
-
-	userRole.ID = uuid.New()
-	userRole.CreatedAt = time.Now()
-
-	_, err := r.db.Exec(ctx, query,
-		userRole.ID,
-		userRole.UserID,
-		userRole.Role,
-		userRole.CreatedAt,
-	)
-
-	if err != nil {
-		return fmt.Errorf("failed to create user role: %w", err)
-	}
-
-	return nil
-}
-
-// GetUserRoles получает все роли пользователя
-func (r *UserRepository) GetUserRoles(ctx context.Context, userID uuid.UUID) ([]models.UserRole, error) {
-	query := `
-		SELECT id, user_id, role, created_at
-		FROM user_roles
-		WHERE user_id = $1
-	`
-
-	rows, err := r.db.Query(ctx, query, userID)
-	if err != nil {
-		return nil, fmt.Errorf("failed to get user roles: %w", err)
-	}
-	defer rows.Close()
-
-	var roles []models.UserRole
-	for rows.Next() {
-		var role models.UserRole
-		if err := rows.Scan(&role.ID, &role.UserID, &role.Role, &role.CreatedAt); err != nil {
-			return nil, fmt.Errorf("failed to scan user role: %w", err)
-		}
-		roles = append(roles, role)
-	}
-
-	if err := rows.Err(); err != nil {
-		return nil, fmt.Errorf("rows iteration error: %w", err)
-	}
-
-	return roles, nil
 }
