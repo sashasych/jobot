@@ -22,6 +22,10 @@ type EmployeeCreateRequest struct {
 // CreatedAt - Дата создания
 // UpdatedAt - Дата обновления
 
+type EmployeeUpdateRequest struct {
+	Tags *[]string `json:"tags,omitempty"`
+}
+
 type EmployeeResponse struct {
 	EmployeeID string    `json:"employee_id"`
 	UserID     string    `json:"user_id"`

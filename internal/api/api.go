@@ -28,7 +28,6 @@ type EmployeeController interface {
 	GetEmployee(w http.ResponseWriter, r *http.Request)
 	UpdateEmployee(w http.ResponseWriter, r *http.Request)
 	DeleteEmployee(w http.ResponseWriter, r *http.Request)
-	GetEmployeeListReactions(w http.ResponseWriter, r *http.Request)
 }
 
 type ResumeController interface {
@@ -36,7 +35,6 @@ type ResumeController interface {
 	GetResume(w http.ResponseWriter, r *http.Request)
 	UpdateResume(w http.ResponseWriter, r *http.Request)
 	DeleteResume(w http.ResponseWriter, r *http.Request)
-	GetEmployeeListResumes(w http.ResponseWriter, r *http.Request)
 }
 
 type EmployerController interface {
@@ -44,18 +42,20 @@ type EmployerController interface {
 	GetEmployer(w http.ResponseWriter, r *http.Request)
 	UpdateEmployer(w http.ResponseWriter, r *http.Request)
 	DeleteEmployer(w http.ResponseWriter, r *http.Request)
-	GetEmployerListVacansies(w http.ResponseWriter, r *http.Request)
 }
 
 type VacancyController interface {
-	CreateVacansy(w http.ResponseWriter, r *http.Request)
-	GetVacansy(w http.ResponseWriter, r *http.Request)
-	GetVacansyList(w http.ResponseWriter, r *http.Request)
-	UpdateVacansy(w http.ResponseWriter, r *http.Request)
-	DeleteVacansy(w http.ResponseWriter, r *http.Request)
+	CreateVacancy(w http.ResponseWriter, r *http.Request)
+	GetVacancy(w http.ResponseWriter, r *http.Request)
+	GetVacancyList(w http.ResponseWriter, r *http.Request)
+	GetEmployerVacancies(w http.ResponseWriter, r *http.Request)
+	UpdateVacancy(w http.ResponseWriter, r *http.Request)
+	DeleteVacancy(w http.ResponseWriter, r *http.Request)
 }
 
 type ReactionController interface {
 	CreateReaction(w http.ResponseWriter, r *http.Request)
+	GetReaction(w http.ResponseWriter, r *http.Request)
+	GetEmployeeReactions(w http.ResponseWriter, r *http.Request)
 	DeleteReaction(w http.ResponseWriter, r *http.Request)
 }

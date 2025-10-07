@@ -13,8 +13,18 @@ import (
 	"time"
 
 	api "jobot/internal/api"
+	employeeRepo "jobot/internal/repository/employee"
+	employerRepo "jobot/internal/repository/employer"
+	reactionRepo "jobot/internal/repository/reaction"
+	resumeRepo "jobot/internal/repository/resume"
 	userRepo "jobot/internal/repository/user"
+	vacancyRepo "jobot/internal/repository/vacancy"
+	employeeSrv "jobot/internal/service/employee"
+	employerSrv "jobot/internal/service/employer"
+	reactionSrv "jobot/internal/service/reaction"
+	resumeSrv "jobot/internal/service/resume"
 	userSrv "jobot/internal/service/user"
+	vacancySrv "jobot/internal/service/vacancy"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/kelseyhightower/envconfig"
@@ -97,19 +107,19 @@ func (app *Application) Initialize(ctx context.Context) error {
 }
 
 func (app *Application) InitializeControllers() error {
-	userRepo := userRepo.NewUserRepository(app.db)
-	employeeRepo := employeeRepo.NewEmployeeRepository(app.db)
-	resumeRepo := resumeRepo.NewResumeRepository(app.db)
-	employerRepo := employerRepo.NewEmployerRepository(app.db)
-	vacancyRepo := vacancyRepo.NewVacancyRepository(app.db)
-	reactionRepo := reactionRepo.NewReactionRepository(app.db)
+	userRepository := userRepo.NewUserRepository(app.db)
+	employeeRepository := employeeRepo.NewEmployeeRepository(app.db)
+	resumeRepository := resumeRepo.NewResumeRepository(app.db)
+	employerRepository := employerRepo.NewEmployerRepository(app.db)
+	vacancyRepository := vacancyRepo.NewVacancyRepository(app.db)
+	reactionRepository := reactionRepo.NewReactionRepository(app.db)
 
-	userService := userSrv.NewUserService(userRepo)
-	employeeService := employeeSrv.NewEmployeeService(employeeService)
-	resumeService := resumeSrv.NewResumeService(resumeService)
-	employerService := employerSrv.NewEmployerService(employerService)
-	vacancyService := vacancySrv.NewVacancyService(vacancyService)
-	reactionService := reactionSrv.NewReactionService(reactionService)
+	userService := userSrv.NewUserService(userRepository)
+	employeeService := employeeSrv.NewEmployeeService(employeeRepository)
+	resumeService := resumeSrv.NewResumeService(resumeRepository)
+	employerService := employerSrv.NewEmployerService(employerRepository)
+	vacancyService := vacancySrv.NewVacancyService(vacancyRepository)
+	reactionService := reactionSrv.NewReactionService(reactionRepository)
 
 	userController := controllers.NewUserController(userService)
 	employeeController := controllers.NewEmployeeController(employeeService)
@@ -126,6 +136,8 @@ func (app *Application) InitializeControllers() error {
 		VacancyController:  vacancyController,
 		ReactionController: reactionController,
 	}
+
+	return nil
 }
 
 // Start запускает приложение
