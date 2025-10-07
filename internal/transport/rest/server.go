@@ -20,6 +20,7 @@ type ConfigHTTPServer struct {
 	Host string
 }
 
+/*
 type HandlersConfig struct {
 	UserController     api.UserController
 	EmployeeController api.EmployeeController
@@ -28,9 +29,10 @@ type HandlersConfig struct {
 	VacancyController  api.VacancyController
 	ReactionController api.ReactionController
 }
+*/
 
 // CreateHTTPServerWithChi creates HTTP server with Chi router
-func CreateHTTPServerWithChi(ctx context.Context, cfg *ConfigHTTPServer, handlersConfig *HandlersConfig) *http.Server {
+func CreateHTTPServerWithChi(ctx context.Context, cfg *ConfigHTTPServer, controller *api.Controller) *http.Server {
 	r := chi.NewRouter()
 
 	// Basic middleware
@@ -62,67 +64,67 @@ func CreateHTTPServerWithChi(ctx context.Context, cfg *ConfigHTTPServer, handler
 	// API routes
 	r.Route("/api", func(r chi.Router) {
 		// User routes
-		r.Route("/user", func(r chi.Router) {
-			r.Post("/", handlersConfig.UserController.CreateUser)
-			r.Put("/", handlersConfig.UserController.UpdateUser)
+		r.Route("/users", func(r chi.Router) {
+			r.Post("/", controller.UserController.CreateUser)
+			r.Put("/", controller.UserController.UpdateUser)
 
 			r.Route("/{UserID}", func(r chi.Router) {
-				r.Get("/", handlersConfig.UserController.GetUser)
-				r.Delete("/", handlersConfig.UserController.DeleteUser)
+				r.Get("/", controller.UserController.GetUser)
+				r.Delete("/", controller.UserController.DeleteUser)
 			})
 		})
 
 		// Employee routes
-		r.Route("/employee", func(r chi.Router) {
-			r.Post("/", handlersConfig.EmployeeController.CreateEmployee)
+		r.Route("/employees", func(r chi.Router) {
+			r.Post("/", controller.EmployeeController.CreateEmployee)
 
 			r.Route("/{EmployeeID}", func(r chi.Router) {
-				r.Get("/reactions", handlersConfig.EmployeeController.GetEmployeeListReactions)
-				r.Get("/", handlersConfig.EmployeeController.GetEmployee)
-				r.Put("/", handlersConfig.EmployeeController.UpdateEmployee)
-				r.Delete("/", handlersConfig.EmployeeController.DeleteEmployee)
+				r.Get("/reactions", controller.EmployeeController.GetEmployeeListReactions)
+				r.Get("/", controller.EmployeeController.GetEmployee)
+				r.Put("/", controller.EmployeeController.UpdateEmployee)
+				r.Delete("/", controller.EmployeeController.DeleteEmployee)
 			})
 		})
 
 		// Resume routes
 		r.Route("/resumes", func(r chi.Router) {
-			r.Post("/", handlersConfig.ResumeController.CreateResume)
-			r.Get("/user/{EmployeeID}", handlersConfig.ResumeController.GetEmployeeListResumes)
+			r.Post("/", controller.ResumeController.CreateResume)
+			r.Get("/user/{EmployeeID}", controller.ResumeController.GetEmployeeListResumes)
 
 			r.Route("/{ResumeID}", func(r chi.Router) {
-				r.Get("/", handlersConfig.ResumeController.GetResume)
-				r.Put("/", handlersConfig.ResumeController.UpdateResume)
-				r.Delete("/", handlersConfig.ResumeController.DeleteResume)
+				r.Get("/", controller.ResumeController.GetResume)
+				r.Put("/", controller.ResumeController.UpdateResume)
+				r.Delete("/", controller.ResumeController.DeleteResume)
 			})
 		})
 
 		// Employer routes
-		r.Route("/employer", func(r chi.Router) {
-			r.Post("/", handlersConfig.EmployerController.CreateEmployer)
+		r.Route("/employers", func(r chi.Router) {
+			r.Post("/", controller.EmployerController.CreateEmployer)
 
 			r.Route("/{EmployerID}", func(r chi.Router) {
-				r.Get("/", handlersConfig.EmployerController.GetEmployer)
-				r.Get("/vacansies", handlersConfig.EmployerController.GetEmployerListVacansies)
-				r.Put("/", handlersConfig.EmployerController.UpdateEmployer)
-				r.Delete("/", handlersConfig.EmployerController.DeleteEmployer)
+				r.Get("/", controller.EmployerController.GetEmployer)
+				r.Get("/vacansies", controller.EmployerController.GetEmployerListVacansies)
+				r.Put("/", controller.EmployerController.UpdateEmployer)
+				r.Delete("/", controller.EmployerController.DeleteEmployer)
 			})
 		})
 
 		// Job posting routes (vacansies)
 		r.Route("/vacansies", func(r chi.Router) {
-			r.Post("/", handlersConfig.VacancyController.CreateVacansy)
-			r.Get("/", handlersConfig.VacancyController.GetVacansyList)
+			r.Post("/", controller.VacancyController.CreateVacansy)
+			r.Get("/", controller.VacancyController.GetVacansyList)
 
 			r.Route("/{VacansieID}", func(r chi.Router) {
-				r.Get("/", handlersConfig.VacancyController.GetVacansy)
-				r.Put("/", handlersConfig.VacancyController.UpdateVacansy)
-				r.Delete("/", handlersConfig.VacancyController.DeleteVacansy)
+				r.Get("/", controller.VacancyController.GetVacansy)
+				r.Put("/", controller.VacancyController.UpdateVacansy)
+				r.Delete("/", controller.VacancyController.DeleteVacansy)
 			})
 		})
 
 		// Reaction routes
 		r.Route("/reactions", func(r chi.Router) {
-			r.Post("/", handlersConfig.ReactionController.CreateReaction)
+			r.Post("/", controller.ReactionController.CreateReaction)
 		})
 	})
 

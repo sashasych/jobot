@@ -4,12 +4,10 @@ import (
 	"context"
 	"fmt"
 	"jobot/internal/repository"
-	"jobot/internal/service/converter"
 	"jobot/internal/service/models"
 	"time"
 
 	"github.com/google/uuid"
-	"golang.org/x/crypto/bcrypt"
 )
 
 type UserService struct {
@@ -21,36 +19,51 @@ func NewUserService(userRepository repository.UserRepository) *UserService {
 }
 
 func (s *UserService) CreateUser(ctx context.Context, user *models.User) error {
-	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	user.ID = uuid.New()
-	user.Password = string(hashedPassword)
 	user.CreatedAt = time.Now()
 	user.UpdatedAt = time.Now()
 
-	return s.userRepository.CreateUser(ctx, converter.ServiceUserToRepositoryUser(user))
+	return s.userRepository.CreateUser(ctx, user)
 }
 
-func (s *UserService) GetUserByID(ctx context.Context, id uuid.UUID) (*models.User, error) {
-	user, err := s.userRepository.GetUserByID(ctx, id)
+func (s *UserService) GetUser(ctx context.Context, id uuid.UUID) (*models.User, error) {
+	user, err := s.userRepository.GetUser(ctx, id)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get user by ID: %w", err)
 	}
 
-	return converter.RepositoryUserToServiceUser(user), nil
+	return user, nil
 }
 
-func (s *UserService) GetUserByEmail(ctx context.Context, email string) (*models.User, error) {
-	user, err := s.userRepository.GetUserByEmail(ctx, email)
+func (s *UserService) UpdateUser(ctx context.Context, req *models.UserUpdateRequest, id uuid.UUID) error {
+	getUser, err := s.GetUser(ctx, id)
 	if err != nil {
-		return nil, fmt.Errorf("failed to get user by email: %w", err)
+		return fmt.Errorf("failed to get user: %w", err)
 	}
 
-	return converter.RepositoryUserToServiceUser(user), nil
-}
+	if req.TgUserName != nil {
+		getUser.TgUserName = *req.TgUserName
+	}
 
-func (s *UserService) UpdateUser(ctx context.Context, user *models.User) error {
-	user.UpdatedAt = time.Now()
-	err := s.userRepository.UpdateUser(ctx, converter.ServiceUserToRepositoryUser(user))
+	if req.TgChatID != nil {
+		getUser.TgChatID = *req.TgChatID
+	}
+
+	if req.IsActive != nil {
+		getUser.IsActive = *req.IsActive
+	}
+
+	if req.IsPremium != nil {
+		getUser.IsPremium = *req.IsPremium
+	}
+
+	if req.Role != nil {
+		getUser.Role = *req.Role
+	}
+
+	getUser.UpdatedAt = time.Now()
+
+	err = s.userRepository.UpdateUser(ctx, getUser)
 	if err != nil {
 		return fmt.Errorf("failed to update user: %w", err)
 	}

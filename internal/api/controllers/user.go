@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
 
 	"jobot/internal/api/converter"
@@ -10,8 +9,10 @@ import (
 	repo "jobot/internal/repository/user"
 	"jobot/internal/service"
 	"jobot/pkg/logger"
+)
 
-	"github.com/google/uuid"
+const (
+	UserIDPathValue = "UserID"
 )
 
 type UserController struct {
@@ -50,38 +51,20 @@ func (c *UserController) CreateUser(w http.ResponseWriter, r *http.Request) {
 	log.Info("Create user request completed")
 }
 
-/*
-func (c *UserController) GetListUser(w http.ResponseWriter, r *http.Request) {
-	log := logger.FromContext(r.Context()).Named("get_list_user")
-	ctx := logger.ContextWithLogger(r.Context(), log)
-
-	log.Info("Start get list user request")
-
-	users, err := c.userService.GetListUser(ctx)
-	if err != nil {
-		c.handleUserServiceError(w, err)
-
-		return
-	}
-
-	c.JSONSimpleSuccess(w, http.StatusOK, users)
-}
-*/
-
 func (c *UserController) GetUser(w http.ResponseWriter, r *http.Request) {
 	log := logger.FromContext(r.Context()).Named("get_user")
 	ctx := logger.ContextWithLogger(r.Context(), log)
 
 	log.Info("Start get user request")
 
-	userID, err := getUserUUID(r)
+	userUUID, err := c.GetUUIDFromPath(r, UserIDPathValue)
 	if err != nil {
 		c.JSONSimpleError(w, err.Error(), http.StatusBadRequest)
 
 		return
 	}
 
-	user, err := c.userService.GetUserByID(ctx, userID)
+	user, err := c.userService.GetUser(ctx, userUUID)
 	if err != nil {
 		c.handleUserServiceError(w, err)
 
@@ -99,22 +82,30 @@ func (c *UserController) UpdateUser(w http.ResponseWriter, r *http.Request) {
 
 	log.Info("Start update user request")
 
+	userUUID, err := c.GetUUIDFromPath(r, UserIDPathValue)
+	if err != nil {
+		c.JSONSimpleError(w, err.Error(), http.StatusBadRequest)
+
+		return
+	}
+
 	user := &models.UserUpdateRequest{}
-	err := c.ReadRequestBody(r, user)
+
+	err = c.ReadRequestBody(r, user)
 	if err != nil {
 		c.JSONSimpleError(w, err.Error(), http.StatusBadRequest)
 
 		return
 	}
 
-	updateUser, err := converter.UserUpdateRequestToServiceUser(user)
+	updateUser, err := converter.UserUpdateRequestToServiceUserUpdateRequest(user)
 	if err != nil {
 		c.JSONSimpleError(w, err.Error(), http.StatusBadRequest)
 
 		return
 	}
 
-	err = c.userService.UpdateUser(ctx, updateUser)
+	err = c.userService.UpdateUser(ctx, updateUser, userUUID)
 	if err != nil {
 		c.handleUserServiceError(w, err)
 
@@ -132,14 +123,14 @@ func (c *UserController) DeleteUser(w http.ResponseWriter, r *http.Request) {
 
 	log.Info("Start delete user request")
 
-	userID, err := getUserUUID(r)
+	userUUID, err := c.GetUUIDFromPath(r, "UserID")
 	if err != nil {
 		c.JSONSimpleError(w, err.Error(), http.StatusBadRequest)
 
 		return
 	}
 
-	err = c.userService.DeleteUser(ctx, userID)
+	err = c.userService.DeleteUser(ctx, userUUID)
 	if err != nil {
 		c.handleUserServiceError(w, err)
 
@@ -160,14 +151,4 @@ func (c *UserController) handleUserServiceError(w http.ResponseWriter, err error
 	default:
 		c.JSONSimpleError(w, err.Error(), http.StatusInternalServerError)
 	}
-}
-
-func getUserUUID(r *http.Request) (uuid.UUID, error) {
-	//id, err := uuid.Parse(r.URL.Query().Get("UserID"))
-	id, err := uuid.Parse(r.PathValue("UserID"))
-	if err != nil {
-		return uuid.Nil, fmt.Errorf("invalid user id: %w", err)
-	}
-
-	return id, nil
 }

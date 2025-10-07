@@ -15,10 +15,6 @@ type UserCreateRequest struct {
 
 // UserUpdateRequest - DTO для обновления пользователя (API → Service)
 type UserUpdateRequest struct {
-	// required
-	ID string `json:"user_id"`
-
-	// optional
 	TgUserName *string `json:"tg_user_name,omitempty"`
 	TgChatID   *string `json:"tg_chat_id,omitempty"`
 	IsActive   *bool   `json:"is_active,omitempty"`

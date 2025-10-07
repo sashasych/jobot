@@ -2,8 +2,11 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type BaseController struct {
@@ -112,4 +115,13 @@ func (c *BaseController) JSONSimpleSuccess(w http.ResponseWriter, code int, data
 // Простая ошибка
 func (c *BaseController) JSONSimpleError(w http.ResponseWriter, message string, code int) {
 	c.JSONError(w, http.StatusText(code), message, code, nil)
+}
+
+func (c *BaseController) GetUUIDFromPath(r *http.Request, value string) (uuid.UUID, error) {
+	id, err := uuid.Parse(r.PathValue(value))
+	if err != nil {
+		return uuid.Nil, fmt.Errorf("invalid user id: %w", err)
+	}
+
+	return id, nil
 }

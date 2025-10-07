@@ -12,6 +12,7 @@ import (
 	"sync"
 	"time"
 
+	api "jobot/internal/api"
 	userRepo "jobot/internal/repository/user"
 	userSrv "jobot/internal/service/user"
 
@@ -29,6 +30,7 @@ type Application struct {
 	logger     *logger.Logger
 	serverHTTP *http.Server
 	db         *pgxpool.Pool
+	controller *api.Controller
 }
 
 // NewApplication создает новое приложение с загруженной конфигурацией
@@ -66,9 +68,18 @@ func (app *Application) Initialize(ctx context.Context) error {
 	)
 
 	// TODO: Создаем репозитории, сервисы и контроллеры
-	userRepo := userRepo.NewUserRepository(app.db)
-	userService := userSrv.NewUserService(userRepo)
-	userController := controllers.NewUserController(userService)
+	app.InitializeControllers()
+
+	/*
+		handlersConfig := &rest.HandlersConfig{
+			UserController:     userController,
+			EmployeeController: employeeController,
+			ResumeController:   resumeController,
+			EmployerController: employerController,
+			VacancyController:  vacancyController,
+			ReactionController: reactionController,
+		}
+	*/
 
 	// Создаем HTTP сервер
 	cfgHTTP := &rest.ConfigHTTPServer{
@@ -79,10 +90,42 @@ func (app *Application) Initialize(ctx context.Context) error {
 		// IdleTimeout:  app.config.HTTP.IdleTimeout,  // TODO: добавить в rest.ConfigHTTPServer
 	}
 
-	app.serverHTTP = rest.CreateHTTPServerWithChi(ctx, cfgHTTP, userController) // TODO: передать контроллеры
+	app.serverHTTP = rest.CreateHTTPServerWithChi(ctx, cfgHTTP, app.controller)
 
 	app.logger.Info("Application initialized successfully")
 	return nil
+}
+
+func (app *Application) InitializeControllers() error {
+	userRepo := userRepo.NewUserRepository(app.db)
+	employeeRepo := employeeRepo.NewEmployeeRepository(app.db)
+	resumeRepo := resumeRepo.NewResumeRepository(app.db)
+	employerRepo := employerRepo.NewEmployerRepository(app.db)
+	vacancyRepo := vacancyRepo.NewVacancyRepository(app.db)
+	reactionRepo := reactionRepo.NewReactionRepository(app.db)
+
+	userService := userSrv.NewUserService(userRepo)
+	employeeService := employeeSrv.NewEmployeeService(employeeService)
+	resumeService := resumeSrv.NewResumeService(resumeService)
+	employerService := employerSrv.NewEmployerService(employerService)
+	vacancyService := vacancySrv.NewVacancyService(vacancyService)
+	reactionService := reactionSrv.NewReactionService(reactionService)
+
+	userController := controllers.NewUserController(userService)
+	employeeController := controllers.NewEmployeeController(employeeService)
+	resumeController := controllers.NewResumeController(resumeService)
+	employerController := controllers.NewEmployerController(employerService)
+	vacancyController := controllers.NewVacancyController(vacancyService)
+	reactionController := controllers.NewReactionController(reactionService)
+
+	app.controller = &api.Controller{
+		UserController:     userController,
+		EmployeeController: employeeController,
+		ResumeController:   resumeController,
+		EmployerController: employerController,
+		VacancyController:  vacancyController,
+		ReactionController: reactionController,
+	}
 }
 
 // Start запускает приложение
