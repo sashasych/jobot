@@ -64,7 +64,7 @@ paths:
                     type: string
                     example: jobot
 
-  /api/user:
+  /api/users:
     post:
       tags:
         - users
@@ -91,7 +91,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
-  /api/user/{userId}:
+  /api/users/{userId}:
     get:
       tags:
         - users
@@ -170,7 +170,7 @@ paths:
         '404':
           description: User not found
 
-  /api/employee:
+  /api/employees:
     post:
       tags:
         - employees
@@ -193,7 +193,7 @@ paths:
         '400':
           description: Bad request
 
-  /api/employee/{employeeId}:
+  /api/employees/{employeeId}:
     get:
       tags:
         - employees
@@ -258,7 +258,7 @@ paths:
         '404':
           description: Employee not found
 
-  /api/employer:
+  /api/employers:
     post:
       tags:
         - employers
@@ -278,7 +278,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/EmployerResponse'
 
-  /api/employer/{employerId}:
+  /api/employers/{employerId}:
     get:
       tags:
         - employers
@@ -337,7 +337,7 @@ paths:
         '200':
           description: Employer deleted successfully
 
-  /api/resume:
+  /api/resumes:
     post:
       tags:
         - resumes
@@ -357,7 +357,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ResumeResponse'
 
-  /api/resume/{resumeId}:
+  /api/resumes/{resumeId}:
     get:
       tags:
         - resumes
@@ -416,7 +416,7 @@ paths:
         '200':
           description: Resume deleted successfully
 
-  /api/vacancy:
+  /api/vacancies:
     post:
       tags:
         - vacancies
@@ -449,7 +449,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/VacancyListResponse'
 
-  /api/vacancy/{vacancyId}:
+  /api/vacancies/{vacancyId}:
     get:
       tags:
         - vacancies
@@ -508,7 +508,7 @@ paths:
         '200':
           description: Vacancy deleted successfully
 
-  /api/vacancy/employer/{employerId}:
+  /api/employers/{employerId}/vacansies:
     get:
       tags:
         - vacancies
@@ -529,7 +529,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/EmployerVacancyListResponse'
 
-  /api/reaction:
+  /api/reactions:
     post:
       tags:
         - reactions
@@ -550,45 +550,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ReactionResponse'
 
-  /api/reaction/{reactionId}:
-    get:
-      tags:
-        - reactions
-      summary: Получить реакцию
-      operationId: getReactionById
-      parameters:
-        - name: reactionId
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ReactionResponse'
-    
-    delete:
-      tags:
-        - reactions
-      summary: Удалить реакцию
-      description: Отменить лайк
-      operationId: deleteReaction
-      parameters:
-        - name: reactionId
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      responses:
-        '200':
-          description: Reaction deleted successfully
-
-  /api/reaction/employee/{employeeId}:
+  /api/employees/{employeeId}/reactions:
     get:
       tags:
         - reactions

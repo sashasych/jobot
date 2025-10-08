@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "jobot-api-collection-v2",
 		"name": "Jobot API v2.0",
-		"description": "Полная коллекция API запросов для тестирования Telegram бота Jobot",
+		"description": "Полная коллекция API запросов для тестирования Telegram бота Jobot. Все пути используют множественное число (REST best practices).",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "jobot"
 	},
@@ -34,9 +34,9 @@
 							"raw": "{\n  \"tg_user_name\": \"john_doe\",\n  \"tg_chat_id\": \"123456789\",\n  \"is_active\": true,\n  \"is_premium\": false,\n  \"role\": \"employee\"\n}"
 						},
 						"url": {
-							"raw": "{{base_url}}/api/user",
+							"raw": "{{base_url}}/api/users",
 							"host": ["{{base_url}}"],
-							"path": ["api", "user"]
+							"path": ["api", "users"]
 						},
 						"description": "Создание нового пользователя Telegram"
 					},
@@ -48,9 +48,9 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/api/user/{{user_id}}",
+							"raw": "{{base_url}}/api/users/{{user_id}}",
 							"host": ["{{base_url}}"],
-							"path": ["api", "user", "{{user_id}}"]
+							"path": ["api", "users", "{{user_id}}"]
 						},
 						"description": "Получение пользователя по ID"
 					},
@@ -66,9 +66,9 @@
 							"raw": "{\n  \"tg_user_name\": \"john_updated\",\n  \"is_active\": true,\n  \"is_premium\": true\n}"
 						},
 						"url": {
-							"raw": "{{base_url}}/api/user/{{user_id}}",
+							"raw": "{{base_url}}/api/users/{{user_id}}",
 							"host": ["{{base_url}}"],
-							"path": ["api", "user", "{{user_id}}"]
+							"path": ["api", "users", "{{user_id}}"]
 						},
 						"description": "Обновление данных пользователя"
 					},
@@ -80,9 +80,9 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/api/user/{{user_id}}",
+							"raw": "{{base_url}}/api/users/{{user_id}}",
 							"host": ["{{base_url}}"],
-							"path": ["api", "user", "{{user_id}}"]
+							"path": ["api", "users", "{{user_id}}"]
 						},
 						"description": "Удаление пользователя"
 					},
@@ -104,9 +104,9 @@
 							"raw": "{\n  \"user_id\": \"{{user_id}}\",\n  \"tags\": [\"golang\", \"postgresql\", \"docker\", \"backend\", \"microservices\"]\n}"
 						},
 						"url": {
-							"raw": "{{base_url}}/api/employee",
+							"raw": "{{base_url}}/api/employees",
 							"host": ["{{base_url}}"],
-							"path": ["api", "employee"]
+							"path": ["api", "employees"]
 						},
 						"description": "Создание профиля сотрудника (соискателя)"
 					},
@@ -118,11 +118,25 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/api/employee/{{employee_id}}",
+							"raw": "{{base_url}}/api/employees/{{employee_id}}",
 							"host": ["{{base_url}}"],
-							"path": ["api", "employee", "{{employee_id}}"]
+							"path": ["api", "employees", "{{employee_id}}"]
 						},
 						"description": "Получение сотрудника по ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Employee Reactions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/employees/{{employee_id}}/reactions",
+							"host": ["{{base_url}}"],
+							"path": ["api", "employees", "{{employee_id}}", "reactions"]
+						},
+						"description": "Получение всех реакций (лайков) сотрудника"
 					},
 					"response": []
 				},
@@ -136,9 +150,9 @@
 							"raw": "{\n  \"tags\": [\"golang\", \"kubernetes\", \"ci/cd\", \"devops\"]\n}"
 						},
 						"url": {
-							"raw": "{{base_url}}/api/employee/{{employee_id}}",
+							"raw": "{{base_url}}/api/employees/{{employee_id}}",
 							"host": ["{{base_url}}"],
-							"path": ["api", "employee", "{{employee_id}}"]
+							"path": ["api", "employees", "{{employee_id}}"]
 						},
 						"description": "Обновление тегов/навыков сотрудника"
 					},
@@ -150,9 +164,9 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/api/employee/{{employee_id}}",
+							"raw": "{{base_url}}/api/employees/{{employee_id}}",
 							"host": ["{{base_url}}"],
-							"path": ["api", "employee", "{{employee_id}}"]
+							"path": ["api", "employees", "{{employee_id}}"]
 						},
 						"description": "Удаление профиля сотрудника"
 					},
@@ -174,9 +188,9 @@
 							"raw": "{\n  \"user_id\": \"{{employer_user_id}}\",\n  \"company_name\": \"TechCorp Inc\",\n  \"company_description\": \"Leading technology company specializing in AI and ML\",\n  \"company_website\": \"https://techcorp.example.com\",\n  \"company_location\": \"Москва, Россия\",\n  \"company_size\": \"51-200\"\n}"
 						},
 						"url": {
-							"raw": "{{base_url}}/api/employer",
+							"raw": "{{base_url}}/api/employers",
 							"host": ["{{base_url}}"],
-							"path": ["api", "employer"]
+							"path": ["api", "employers"]
 						},
 						"description": "Создание профиля работодателя (компании)"
 					},
@@ -188,11 +202,25 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/api/employer/{{employer_id}}",
+							"raw": "{{base_url}}/api/employers/{{employer_id}}",
 							"host": ["{{base_url}}"],
-							"path": ["api", "employer", "{{employer_id}}"]
+							"path": ["api", "employers", "{{employer_id}}"]
 						},
 						"description": "Получение работодателя по ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Employer Vacancies",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/employers/{{employer_id}}/vacansies",
+							"host": ["{{base_url}}"],
+							"path": ["api", "employers", "{{employer_id}}", "vacansies"]
+						},
+						"description": "Получение всех вакансий работодателя"
 					},
 					"response": []
 				},
@@ -206,9 +234,9 @@
 							"raw": "{\n  \"company_name\": \"TechCorp International\",\n  \"company_description\": \"Global leader in AI technology\",\n  \"company_size\": \"201-500\"\n}"
 						},
 						"url": {
-							"raw": "{{base_url}}/api/employer/{{employer_id}}",
+							"raw": "{{base_url}}/api/employers/{{employer_id}}",
 							"host": ["{{base_url}}"],
-							"path": ["api", "employer", "{{employer_id}}"]
+							"path": ["api", "employers", "{{employer_id}}"]
 						},
 						"description": "Обновление данных работодателя"
 					},
@@ -220,9 +248,9 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/api/employer/{{employer_id}}",
+							"raw": "{{base_url}}/api/employers/{{employer_id}}",
 							"host": ["{{base_url}}"],
-							"path": ["api", "employer", "{{employer_id}}"]
+							"path": ["api", "employers", "{{employer_id}}"]
 						},
 						"description": "Удаление профиля работодателя"
 					},
@@ -244,9 +272,9 @@
 							"raw": "{\n  \"employee_id\": \"{{employee_id}}\",\n  \"tg_file_id\": \"BAADAgADZAAD1234567890\"\n}"
 						},
 						"url": {
-							"raw": "{{base_url}}/api/resume",
+							"raw": "{{base_url}}/api/resumes",
 							"host": ["{{base_url}}"],
-							"path": ["api", "resume"]
+							"path": ["api", "resumes"]
 						},
 						"description": "Загрузка резюме (Telegram file ID)"
 					},
@@ -258,9 +286,9 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/api/resume/{{resume_id}}",
+							"raw": "{{base_url}}/api/resumes/{{resume_id}}",
 							"host": ["{{base_url}}"],
-							"path": ["api", "resume", "{{resume_id}}"]
+							"path": ["api", "resumes", "{{resume_id}}"]
 						},
 						"description": "Получение резюме по ID"
 					},
@@ -276,9 +304,9 @@
 							"raw": "{\n  \"tg_file_id\": \"BAADAgADaAAD0987654321\"\n}"
 						},
 						"url": {
-							"raw": "{{base_url}}/api/resume/{{resume_id}}",
+							"raw": "{{base_url}}/api/resumes/{{resume_id}}",
 							"host": ["{{base_url}}"],
-							"path": ["api", "resume", "{{resume_id}}"]
+							"path": ["api", "resumes", "{{resume_id}}"]
 						},
 						"description": "Обновление резюме (замена файла)"
 					},
@@ -290,9 +318,9 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/api/resume/{{resume_id}}",
+							"raw": "{{base_url}}/api/resumes/{{resume_id}}",
 							"host": ["{{base_url}}"],
-							"path": ["api", "resume", "{{resume_id}}"]
+							"path": ["api", "resumes", "{{resume_id}}"]
 						},
 						"description": "Удаление резюме"
 					},
@@ -311,12 +339,12 @@
 						"header": [{"key": "Content-Type", "value": "application/json"}],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"employer_id\": \"{{employer_id}}\",\n  \"tags\": [\"golang\", \"kubernetes\", \"microservices\", \"senior\"],\n  \"title\": \"Senior Backend Developer (Go)\",\n  \"description\": \"We are looking for an experienced Backend Developer to join our team. Must have 5+ years of experience with Go, Kubernetes, and microservices architecture. Responsibilities include designing and implementing scalable backend services.\",\n  \"location\": \"Москва (можно удалённо)\",\n  \"salary\": \"250,000 - 350,000 руб/месяц\"\n}"
+							"raw": "{\n  \"employer_id\": \"{{employer_id}}\",\n  \"tags\": [\"golang\", \"kubernetes\", \"microservices\", \"senior\"],\n  \"title\": \"Senior Backend Developer (Go)\",\n  \"description\": \"We are looking for an experienced Backend Developer to join our team. Must have 5+ years of experience with Go, Kubernetes, and microservices architecture.\",\n  \"location\": \"Москва (можно удалённо)\",\n  \"salary\": \"250,000 - 350,000 руб/месяц\"\n}"
 						},
 						"url": {
-							"raw": "{{base_url}}/api/vacancy",
+							"raw": "{{base_url}}/api/vacancies",
 							"host": ["{{base_url}}"],
-							"path": ["api", "vacancy"]
+							"path": ["api", "vacancies"]
 						},
 						"description": "Создание новой вакансии"
 					},
@@ -328,9 +356,9 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/api/vacancy/{{vacancy_id}}",
+							"raw": "{{base_url}}/api/vacancies/{{vacancy_id}}",
 							"host": ["{{base_url}}"],
-							"path": ["api", "vacancy", "{{vacancy_id}}"]
+							"path": ["api", "vacancies", "{{vacancy_id}}"]
 						},
 						"description": "Получение вакансии по ID"
 					},
@@ -342,9 +370,9 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/api/vacancy",
+							"raw": "{{base_url}}/api/vacancies",
 							"host": ["{{base_url}}"],
-							"path": ["api", "vacancy"]
+							"path": ["api", "vacancies"]
 						},
 						"description": "Получение списка всех вакансий"
 					},
@@ -356,9 +384,9 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/api/vacancy/employer/{{employer_id}}",
+							"raw": "{{base_url}}/api/employers/{{employer_id}}/vacansies",
 							"host": ["{{base_url}}"],
-							"path": ["api", "vacancy", "employer", "{{employer_id}}"]
+							"path": ["api", "employers", "{{employer_id}}", "vacansies"]
 						},
 						"description": "Получение всех вакансий конкретного работодателя"
 					},
@@ -374,9 +402,9 @@
 							"raw": "{\n  \"title\": \"Senior Backend Developer (Go) - Updated\",\n  \"salary\": \"300,000 - 400,000 руб/месяц\",\n  \"tags\": [\"golang\", \"kubernetes\", \"aws\", \"terraform\"]\n}"
 						},
 						"url": {
-							"raw": "{{base_url}}/api/vacancy/{{vacancy_id}}",
+							"raw": "{{base_url}}/api/vacancies/{{vacancy_id}}",
 							"host": ["{{base_url}}"],
-							"path": ["api", "vacancy", "{{vacancy_id}}"]
+							"path": ["api", "vacancies", "{{vacancy_id}}"]
 						},
 						"description": "Обновление данных вакансии"
 					},
@@ -388,9 +416,9 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/api/vacancy/{{vacancy_id}}",
+							"raw": "{{base_url}}/api/vacancies/{{vacancy_id}}",
 							"host": ["{{base_url}}"],
-							"path": ["api", "vacancy", "{{vacancy_id}}"]
+							"path": ["api", "vacancies", "{{vacancy_id}}"]
 						},
 						"description": "Удаление вакансии"
 					},
@@ -412,25 +440,11 @@
 							"raw": "{\n  \"employee_id\": \"{{employee_id}}\",\n  \"vacansie_id\": \"{{vacancy_id}}\",\n  \"reaction\": \"like\"\n}"
 						},
 						"url": {
-							"raw": "{{base_url}}/api/reaction",
+							"raw": "{{base_url}}/api/reactions",
 							"host": ["{{base_url}}"],
-							"path": ["api", "reaction"]
+							"path": ["api", "reactions"]
 						},
 						"description": "Создание реакции (лайк) на вакансию"
-					},
-					"response": []
-				},
-				{
-					"name": "Get Reaction by ID",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/api/reaction/{{reaction_id}}",
-							"host": ["{{base_url}}"],
-							"path": ["api", "reaction", "{{reaction_id}}"]
-						},
-						"description": "Получение реакции по ID"
 					},
 					"response": []
 				},
@@ -440,25 +454,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/api/reaction/employee/{{employee_id}}",
+							"raw": "{{base_url}}/api/employees/{{employee_id}}/reactions",
 							"host": ["{{base_url}}"],
-							"path": ["api", "reaction", "employee", "{{employee_id}}"]
+							"path": ["api", "employees", "{{employee_id}}", "reactions"]
 						},
 						"description": "Получение всех реакций сотрудника"
-					},
-					"response": []
-				},
-				{
-					"name": "Delete Reaction",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/api/reaction/{{reaction_id}}",
-							"host": ["{{base_url}}"],
-							"path": ["api", "reaction", "{{reaction_id}}"]
-						},
-						"description": "Удаление реакции (отмена лайка)"
 					},
 					"response": []
 				}
@@ -484,34 +484,14 @@
 					"    try {",
 					"        const jsonData = pm.response.json();",
 					"        if (jsonData.data) {",
-					"            // Сохранить user_id",
-					"            if (jsonData.data.id) {",
-					"                pm.collectionVariables.set('user_id', jsonData.data.id);",
-					"            }",
-					"            // Сохранить employee_id",
-					"            if (jsonData.data.employee_id) {",
-					"                pm.collectionVariables.set('employee_id', jsonData.data.employee_id);",
-					"            }",
-					"            // Сохранить employer_id",
-					"            if (jsonData.data.employer_id) {",
-					"                pm.collectionVariables.set('employer_id', jsonData.data.employer_id);",
-					"            }",
-					"            // Сохранить resume_id",
-					"            if (jsonData.data.resume_id) {",
-					"                pm.collectionVariables.set('resume_id', jsonData.data.resume_id);",
-					"            }",
-					"            // Сохранить vacancy_id",
-					"            if (jsonData.data.vacansie_id) {",
-					"                pm.collectionVariables.set('vacancy_id', jsonData.data.vacansie_id);",
-					"            }",
-					"            // Сохранить reaction_id",
-					"            if (jsonData.data.reaction_id) {",
-					"                pm.collectionVariables.set('reaction_id', jsonData.data.reaction_id);",
-					"            }",
+					"            if (jsonData.data.id) pm.collectionVariables.set('user_id', jsonData.data.id);",
+					"            if (jsonData.data.employee_id) pm.collectionVariables.set('employee_id', jsonData.data.employee_id);",
+					"            if (jsonData.data.employer_id) pm.collectionVariables.set('employer_id', jsonData.data.employer_id);",
+					"            if (jsonData.data.resume_id) pm.collectionVariables.set('resume_id', jsonData.data.resume_id);",
+					"            if (jsonData.data.vacansie_id) pm.collectionVariables.set('vacancy_id', jsonData.data.vacansie_id);",
+					"            if (jsonData.data.reaction_id) pm.collectionVariables.set('reaction_id', jsonData.data.reaction_id);",
 					"        }",
-					"    } catch(e) {",
-					"        console.log('Could not parse response');",
-					"    }",
+					"    } catch(e) { console.log('Could not parse response'); }",
 					"}"
 				]
 			}

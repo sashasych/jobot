@@ -68,52 +68,51 @@ GET /health - Проверка состояния API
 
 ### Users (Пользователи)
 ```
-POST   /api/user           - Создать пользователя
-GET    /api/user/{id}      - Получить пользователя
-PUT    /api/user/{id}      - Обновить пользователя
-DELETE /api/user/{id}      - Удалить пользователя
+POST   /api/users           - Создать пользователя
+GET    /api/users/{id}      - Получить пользователя
+PUT    /api/users/{id}      - Обновить пользователя
+DELETE /api/users/{id}      - Удалить пользователя
 ```
 
 ### Employees (Сотрудники)
 ```
-POST   /api/employee           - Создать профиль сотрудника
-GET    /api/employee/{id}      - Получить сотрудника
-PUT    /api/employee/{id}      - Обновить сотрудника
-DELETE /api/employee/{id}      - Удалить сотрудника
+POST   /api/employees                    - Создать профиль сотрудника
+GET    /api/employees/{id}               - Получить сотрудника
+GET    /api/employees/{id}/reactions     - Получить реакции сотрудника
+PUT    /api/employees/{id}               - Обновить сотрудника
+DELETE /api/employees/{id}               - Удалить сотрудника
 ```
 
 ### Employers (Работодатели)
 ```
-POST   /api/employer           - Создать профиль работодателя
-GET    /api/employer/{id}      - Получить работодателя
-PUT    /api/employer/{id}      - Обновить работодателя
-DELETE /api/employer/{id}      - Удалить работодателя
+POST   /api/employers                    - Создать профиль работодателя
+GET    /api/employers/{id}               - Получить работодателя
+GET    /api/employers/{id}/vacansies     - Получить вакансии работодателя
+PUT    /api/employers/{id}               - Обновить работодателя
+DELETE /api/employers/{id}               - Удалить работодателя
 ```
 
 ### Resumes (Резюме)
 ```
-POST   /api/resume           - Загрузить резюме
-GET    /api/resume/{id}      - Получить резюме
-PUT    /api/resume/{id}      - Обновить резюме
-DELETE /api/resume/{id}      - Удалить резюме
+POST   /api/resumes           - Загрузить резюме
+GET    /api/resumes/{id}      - Получить резюме
+PUT    /api/resumes/{id}      - Обновить резюме
+DELETE /api/resumes/{id}      - Удалить резюме
 ```
 
 ### Vacancies (Вакансии)
 ```
-POST   /api/vacancy                    - Создать вакансию
-GET    /api/vacancy                    - Получить все вакансии
-GET    /api/vacancy/{id}               - Получить вакансию
-GET    /api/vacancy/employer/{id}     - Получить вакансии работодателя
-PUT    /api/vacancy/{id}               - Обновить вакансию
-DELETE /api/vacancy/{id}               - Удалить вакансию
+POST   /api/vacancies                  - Создать вакансию
+GET    /api/vacancies                  - Получить все вакансии
+GET    /api/vacancies/{id}             - Получить вакансию
+PUT    /api/vacancies/{id}             - Обновить вакансию
+DELETE /api/vacancies/{id}             - Удалить вакансию
 ```
 
 ### Reactions (Реакции)
 ```
-POST   /api/reaction                   - Создать реакцию (лайк)
-GET    /api/reaction/{id}              - Получить реакцию
-GET    /api/reaction/employee/{id}    - Получить реакции сотрудника
-DELETE /api/reaction/{id}              - Удалить реакцию
+POST   /api/reactions                        - Создать реакцию (лайк)
+GET    /api/employees/{id}/reactions         - Получить реакции сотрудника
 ```
 
 ## 🎨 Примеры использования
@@ -122,7 +121,7 @@ DELETE /api/reaction/{id}              - Удалить реакцию
 
 **Request:**
 ```bash
-curl -X POST http://localhost:8080/api/user \
+curl -X POST http://localhost:8080/api/users \
   -H "Content-Type: application/json" \
   -d '{
     "tg_user_name": "john_doe",
@@ -151,7 +150,7 @@ curl -X POST http://localhost:8080/api/user \
 
 **Request:**
 ```bash
-curl -X POST http://localhost:8080/api/vacancy \
+curl -X POST http://localhost:8080/api/vacancies \
   -H "Content-Type: application/json" \
   -d '{
     "employer_id": "770e8400-e29b-41d4-a716-446655440001",
@@ -237,12 +236,12 @@ https://editor.swagger.io/
 curl http://localhost:8080/health
 
 # 2. Создайте пользователя
-curl -X POST http://localhost:8080/api/user \
+curl -X POST http://localhost:8080/api/users \
   -H "Content-Type: application/json" \
   -d '{"tg_chat_id": "123", "role": "employee"}'
 
 # 3. Получите пользователя
-curl http://localhost:8080/api/user/{id}
+curl http://localhost:8080/api/users/{id}
 ```
 
 ### 3. Работа с UUID

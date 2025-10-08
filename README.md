@@ -252,16 +252,16 @@ GET /health
 ### 👤 Users (Пользователи)
 
 ```http
-POST   /api/user              # Создать пользователя
-GET    /api/user              # Получить список пользователей
-GET    /api/user/{UserID}     # Получить пользователя по ID
-PUT    /api/user/{UserID}     # Обновить пользователя
-DELETE /api/user/{UserID}     # Удалить пользователя
+POST   /api/users              # Создать пользователя
+GET    /api/users              # Получить список пользователей
+GET    /api/users/{UserID}     # Получить пользователя по ID
+PUT    /api/users/{UserID}     # Обновить пользователя
+DELETE /api/users/{UserID}     # Удалить пользователя
 ```
 
 **Пример создания пользователя:**
 ```json
-POST /api/user
+POST /api/users
 {
   "tg_user_name": "john_doe",
   "tg_chat_id": "123456789",
@@ -276,15 +276,15 @@ POST /api/user
 ### 👨‍💼 Employees (Сотрудники)
 
 ```http
-POST   /api/employee                    # Создать профиль сотрудника
-GET    /api/employee/{EmployeeID}       # Получить сотрудника по ID
-PUT    /api/employee/{EmployeeID}       # Обновить сотрудника
-DELETE /api/employee/{EmployeeID}       # Удалить сотрудника
+POST   /api/employees                    # Создать профиль сотрудника
+GET    /api/employees/{EmployeeID}       # Получить сотрудника по ID
+PUT    /api/employees/{EmployeeID}       # Обновить сотрудника
+DELETE /api/employees/{EmployeeID}       # Удалить сотрудника
 ```
 
 **Пример создания сотрудника:**
 ```json
-POST /api/employee
+POST /api/employees
 {
   "user_id": "550e8400-e29b-41d4-a716-446655440001",
   "tags": ["golang", "postgresql", "docker", "backend"]
@@ -296,15 +296,15 @@ POST /api/employee
 ### 🏢 Employers (Работодатели)
 
 ```http
-POST   /api/employer                    # Создать профиль работодателя
-GET    /api/employer/{EmployerID}       # Получить работодателя по ID
-PUT    /api/employer/{EmployerID}       # Обновить работодателя
-DELETE /api/employer/{EmployerID}       # Удалить работодателя
+POST   /api/employers                    # Создать профиль работодателя
+GET    /api/employers/{EmployerID}       # Получить работодателя по ID
+PUT    /api/employers/{EmployerID}       # Обновить работодателя
+DELETE /api/employers/{EmployerID}       # Удалить работодателя
 ```
 
 **Пример создания работодателя:**
 ```json
-POST /api/employer
+POST /api/employers
 {
   "user_id": "550e8400-e29b-41d4-a716-446655440002",
   "company_name": "TechCorp Inc",
@@ -320,15 +320,15 @@ POST /api/employer
 ### 📄 Resumes (Резюме)
 
 ```http
-POST   /api/resume                      # Загрузить резюме
-GET    /api/resume/{ResumeID}           # Получить резюме по ID
-PUT    /api/resume/{ResumeID}           # Обновить резюме
-DELETE /api/resume/{ResumeID}           # Удалить резюме
+POST   /api/resumes                      # Загрузить резюме
+GET    /api/resumes/{ResumeID}           # Получить резюме по ID
+PUT    /api/resumes/{ResumeID}           # Обновить резюме
+DELETE /api/resumes/{ResumeID}           # Удалить резюме
 ```
 
 **Пример загрузки резюме:**
 ```json
-POST /api/resume
+POST /api/resumes
 {
   "employee_id": "660e8400-e29b-41d4-a716-446655440001",
   "tg_file_id": "BAADAgADZAAD1234567890"
@@ -340,17 +340,17 @@ POST /api/resume
 ### 💼 Vacancies (Вакансии)
 
 ```http
-POST   /api/vacancy                           # Создать вакансию
-GET    /api/vacancy/{VacancyID}               # Получить вакансию по ID
-GET    /api/vacancy                           # Получить список всех вакансий
-GET    /api/vacancy/employer/{EmployerID}    # Получить вакансии работодателя
-PUT    /api/vacancy/{VacancyID}               # Обновить вакансию
-DELETE /api/vacancy/{VacancyID}               # Удалить вакансию
+POST   /api/vacancies                           # Создать вакансию
+GET    /api/vacancies/{VacancyID}               # Получить вакансию по ID
+GET    /api/vacancies                           # Получить список всех вакансий
+GET    /api/employers/{EmployerID}/vacansies   # Получить вакансии работодателя
+PUT    /api/vacancies/{VacancyID}               # Обновить вакансию
+DELETE /api/vacancies/{VacancyID}               # Удалить вакансию
 ```
 
 **Пример создания вакансии:**
 ```json
-POST /api/vacancy
+POST /api/vacancies
 {
   "employer_id": "770e8400-e29b-41d4-a716-446655440001",
   "tags": ["golang", "kubernetes", "microservices"],
@@ -366,15 +366,13 @@ POST /api/vacancy
 ### 👍 Reactions (Реакции)
 
 ```http
-POST   /api/reaction                            # Создать реакцию (лайк)
-GET    /api/reaction/{ReactionID}               # Получить реакцию по ID
-GET    /api/reaction/employee/{EmployeeID}     # Получить реакции сотрудника
-DELETE /api/reaction/{ReactionID}               # Удалить реакцию
+POST   /api/reactions                              # Создать реакцию (лайк)
+GET    /api/employees/{EmployeeID}/reactions      # Получить реакции сотрудника
 ```
 
 **Пример создания реакции:**
 ```json
-POST /api/reaction
+POST /api/reactions
 {
   "employee_id": "660e8400-e29b-41d4-a716-446655440001",
   "vacansie_id": "990e8400-e29b-41d4-a716-446655440001",

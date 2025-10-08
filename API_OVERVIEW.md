@@ -14,62 +14,62 @@
 
 ## 📊 Статистика API
 
-- **Всего endpoints**: 30+
+- **Всего endpoints**: 26
 - **Категорий**: 7 (health, users, employees, employers, resumes, vacancies, reactions)
 - **Методы**: GET, POST, PUT, DELETE
 - **Формат**: REST API, JSON
 - **Документация**: OpenAPI 3.0
+- **Стиль путей**: Plural (множественное число) ✅
 
 ## 🔗 Endpoints по категориям
 
 ### 👤 Users (4 endpoints)
 ```
-POST   /api/user           ← Создать пользователя
-GET    /api/user/{id}      ← Получить пользователя
-PUT    /api/user/{id}      ← Обновить пользователя
-DELETE /api/user/{id}      ← Удалить пользователя
+POST   /api/users           ← Создать пользователя
+GET    /api/users/{id}      ← Получить пользователя
+PUT    /api/users/{id}      ← Обновить пользователя
+DELETE /api/users/{id}      ← Удалить пользователя
 ```
 
-### 👨‍💼 Employees (4 endpoints)
+### 👨‍💼 Employees (5 endpoints)
 ```
-POST   /api/employee       ← Создать профиль сотрудника
-GET    /api/employee/{id}  ← Получить сотрудника
-PUT    /api/employee/{id}  ← Обновить сотрудника
-DELETE /api/employee/{id}  ← Удалить сотрудника
+POST   /api/employees                    ← Создать профиль сотрудника
+GET    /api/employees/{id}               ← Получить сотрудника
+GET    /api/employees/{id}/reactions     ← Реакции сотрудника
+PUT    /api/employees/{id}               ← Обновить сотрудника
+DELETE /api/employees/{id}               ← Удалить сотрудника
 ```
 
-### 🏢 Employers (4 endpoints)
+### 🏢 Employers (5 endpoints)
 ```
-POST   /api/employer       ← Создать профиль работодателя
-GET    /api/employer/{id}  ← Получить работодателя
-PUT    /api/employer/{id}  ← Обновить работодателя
-DELETE /api/employer/{id}  ← Удалить работодателя
+POST   /api/employers                    ← Создать профиль работодателя
+GET    /api/employers/{id}               ← Получить работодателя
+GET    /api/employers/{id}/vacansies     ← Вакансии работодателя
+PUT    /api/employers/{id}               ← Обновить работодателя
+DELETE /api/employers/{id}               ← Удалить работодателя
 ```
 
 ### 📄 Resumes (4 endpoints)
 ```
-POST   /api/resume         ← Загрузить резюме
-GET    /api/resume/{id}    ← Получить резюме
-PUT    /api/resume/{id}    ← Обновить резюме
-DELETE /api/resume/{id}    ← Удалить резюме
+POST   /api/resumes         ← Загрузить резюме
+GET    /api/resumes/{id}    ← Получить резюме
+PUT    /api/resumes/{id}    ← Обновить резюме
+DELETE /api/resumes/{id}    ← Удалить резюме
 ```
 
-### 💼 Vacancies (6 endpoints)
+### 💼 Vacancies (5 endpoints)
 ```
-POST   /api/vacancy                  ← Создать вакансию
-GET    /api/vacancy                  ← Все вакансии
-GET    /api/vacancy/{id}             ← Получить вакансию
-GET    /api/vacancy/employer/{id}   ← Вакансии работодателя
-PUT    /api/vacancy/{id}             ← Обновить вакансию
-DELETE /api/vacancy/{id}             ← Удалить вакансию
+POST   /api/vacancies                  ← Создать вакансию
+GET    /api/vacancies                  ← Все вакансии
+GET    /api/vacancies/{id}             ← Получить вакансию
+PUT    /api/vacancies/{id}             ← Обновить вакансию
+DELETE /api/vacancies/{id}             ← Удалить вакансию
 ```
 
-### 👍 Reactions (4 endpoints)
+### 👍 Reactions (2 endpoints)
 ```
-POST   /api/reaction                 ← Создать реакцию (лайк)
-GET    /api/reaction/{id}            ← Получить реакцию
-GET    /api/reaction/employee/{id}  ← Реакции сотрудника
-DELETE /api/reaction/{id}            ← Удалить реакцию
+POST   /api/reactions                      ← Создать реакцию (лайк)
+GET    /api/employees/{id}/reactions       ← Реакции сотрудника
 ```
 
 ## 🎨 Быстрый тест
@@ -88,7 +88,7 @@ curl http://localhost:8080/health
 ### 2. Создание пользователя
 
 ```bash
-curl -X POST http://localhost:8080/api/user \
+curl -X POST http://localhost:8080/api/users \
   -H "Content-Type: application/json" \
   -d '{
     "tg_chat_id": "123456789",
@@ -155,7 +155,7 @@ http://localhost:8080/api/docs
 4. **HTTPie**
    - Более дружественная альтернатива curl
    ```bash
-   http POST localhost:8080/api/user tg_chat_id=123 role=employee
+   http POST localhost:8080/api/users tg_chat_id=123 role=employee
    ```
 
 ### Для работы с БД
@@ -191,25 +191,25 @@ make db-psql
 
 ```bash
 # 1. Создать пользователя
-USER_ID=$(curl -X POST http://localhost:8080/api/user \
+USER_ID=$(curl -X POST http://localhost:8080/api/users \
   -H "Content-Type: application/json" \
   -d '{"tg_chat_id": "111", "role": "employee"}' | jq -r '.data.id')
 
 # 2. Создать профиль сотрудника
-EMPLOYEE_ID=$(curl -X POST http://localhost:8080/api/employee \
+EMPLOYEE_ID=$(curl -X POST http://localhost:8080/api/employees \
   -H "Content-Type: application/json" \
   -d "{\"user_id\": \"$USER_ID\", \"tags\": [\"golang\"]}" | jq -r '.data.employee_id')
 
 # 3. Получить список вакансий
-curl http://localhost:8080/api/vacancy
+curl http://localhost:8080/api/vacancies
 
 # 4. Поставить лайк на вакансию
-curl -X POST http://localhost:8080/api/reaction \
+curl -X POST http://localhost:8080/api/reactions \
   -H "Content-Type: application/json" \
   -d "{\"employee_id\": \"$EMPLOYEE_ID\", \"vacansie_id\": \"VACANCY_ID\", \"reaction\": \"like\"}"
 
 # 5. Посмотреть свои лайки
-curl http://localhost:8080/api/reaction/employee/$EMPLOYEE_ID
+curl http://localhost:8080/api/employees/$EMPLOYEE_ID/reactions
 ```
 
 ## 🎯 Рекомендуемый workflow

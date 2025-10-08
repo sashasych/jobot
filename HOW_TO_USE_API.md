@@ -24,7 +24,7 @@ http://localhost:8080/api/docs
 ### Шаг 3: Начните тестировать!
 
 На странице Swagger UI:
-1. Выберите любой endpoint (например, `POST /api/user`)
+1. Выберите любой endpoint (например, `POST /api/users`)
 2. Нажмите **"Try it out"**
 3. Заполните данные
 4. Нажмите **"Execute"**
@@ -35,11 +35,11 @@ http://localhost:8080/api/docs
 ### Сценарий 1: Я соискатель
 
 ```
-1. Создать аккаунт     → POST /api/user (role: employee)
-2. Создать профиль     → POST /api/employee
-3. Загрузить резюме    → POST /api/resume
-4. Посмотреть вакансии → GET /api/vacancy
-5. Поставить лайк      → POST /api/reaction
+1. Создать аккаунт     → POST /api/users (role: employee)
+2. Создать профиль     → POST /api/employees
+3. Загрузить резюме    → POST /api/resumes
+4. Посмотреть вакансии → GET /api/vacancies
+5. Поставить лайк      → POST /api/reactions
 ```
 
 **Попробуйте в Swagger UI:**
@@ -48,11 +48,11 @@ http://localhost:8080/api/docs
 ### Сценарий 2: Я работодатель
 
 ```
-1. Создать аккаунт       → POST /api/user (role: employer)
-2. Создать профиль       → POST /api/employer
-3. Опубликовать вакансию → POST /api/vacancy
-4. Посмотреть вакансии   → GET /api/vacancy/employer/{id}
-5. Обновить вакансию     → PUT /api/vacancy/{id}
+1. Создать аккаунт       → POST /api/users (role: employer)
+2. Создать профиль       → POST /api/employers
+3. Опубликовать вакансию → POST /api/vacancies
+4. Посмотреть вакансии   → GET /api/employers/{id}/vacansies
+5. Обновить вакансию     → PUT /api/vacancies/{id}
 ```
 
 **Попробуйте в Swagger UI:**
@@ -81,7 +81,7 @@ make docker-rebuild
 
 ### Создать пользователя
 ```bash
-curl -X POST http://localhost:8080/api/user \
+curl -X POST http://localhost:8080/api/users \
   -H "Content-Type: application/json" \
   -d '{
     "tg_chat_id": "123456789",
@@ -92,7 +92,7 @@ curl -X POST http://localhost:8080/api/user \
 
 ### Создать вакансию
 ```bash
-curl -X POST http://localhost:8080/api/vacancy \
+curl -X POST http://localhost:8080/api/vacancies \
   -H "Content-Type: application/json" \
   -d '{
     "employer_id": "YOUR_EMPLOYER_ID",
@@ -106,7 +106,7 @@ curl -X POST http://localhost:8080/api/vacancy \
 
 ### Получить все вакансии
 ```bash
-curl http://localhost:8080/api/vacancy
+curl http://localhost:8080/api/vacancies
 ```
 
 ## 🛠️ Что выбрать?
@@ -124,8 +124,8 @@ curl http://localhost:8080/api/vacancy
 
 1. Начните со **Swagger UI**: http://localhost:8080/api/docs
 2. Изучите раздел **Health Check**
-3. Попробуйте создать пользователя: `POST /api/user`
-4. Получите пользователя: `GET /api/user/{id}`
+3. Попробуйте создать пользователя: `POST /api/users`
+4. Получите пользователя: `GET /api/users/{id}`
 5. Переходите к более сложным операциям
 
 ### Если вы опытный разработчик:

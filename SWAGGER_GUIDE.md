@@ -50,7 +50,7 @@ Swagger UI группирует endpoints по тегам:
 
 **Шаг 1:** Раскройте секцию `users`
 
-**Шаг 2:** Найдите `POST /api/user` - "Создать пользователя"
+**Шаг 2:** Найдите `POST /api/users` - "Создать пользователя"
 
 **Шаг 3:** Нажмите **"Try it out"**
 
@@ -111,55 +111,51 @@ UserCreateRequest:
 ### Сценарий 1: Регистрация соискателя
 
 ```
-1. POST /api/user (role: employee)
+1. POST /api/users (role: employee)
    → Скопировать user_id из ответа
 
-2. POST /api/employee (используя user_id)
+2. POST /api/employees (используя user_id)
    → Скопировать employee_id из ответа
 
-3. POST /api/resume (используя employee_id)
+3. POST /api/resumes (используя employee_id)
    → Скопировать resume_id из ответа
 
-4. GET /api/employee/{employee_id}
+4. GET /api/employees/{employee_id}
    → Проверить, что профиль создан
 ```
 
 ### Сценарий 2: Публикация вакансии
 
 ```
-1. POST /api/user (role: employer)
+1. POST /api/users (role: employer)
    → Скопировать user_id
 
-2. POST /api/employer (используя user_id)
+2. POST /api/employers (используя user_id)
    → Скопировать employer_id
 
-3. POST /api/vacancy (используя employer_id)
+3. POST /api/vacancies (используя employer_id)
    → Скопировать vacancy_id
 
-4. GET /api/vacancy/employer/{employer_id}
+4. GET /api/employers/{employer_id}/vacansies
    → Увидеть список вакансий компании
 ```
 
 ### Сценарий 3: Matching (Лайки)
 
 ```
-1. GET /api/vacancy
+1. GET /api/vacancies
    → Получить список всех вакансий
    → Выбрать vacancy_id
 
-2. POST /api/reaction
+2. POST /api/reactions
    {
      "employee_id": "...",
      "vacansie_id": "...",
      "reaction": "like"
    }
-   → Скопировать reaction_id
 
-3. GET /api/reaction/employee/{employee_id}
+3. GET /api/employees/{employee_id}/reactions
    → Увидеть все лайки сотрудника
-
-4. DELETE /api/reaction/{reaction_id}
-   → Отменить лайк
 ```
 
 ## 🔧 Продвинутые возможности
@@ -224,12 +220,12 @@ http://localhost:8080/api/swagger.yaml
 curl http://localhost:8080/health
 
 # Создание пользователя
-curl -X POST http://localhost:8080/api/user \
+curl -X POST http://localhost:8080/api/users \
   -H "Content-Type: application/json" \
   -d '{"tg_chat_id": "123", "role": "employee"}'
 
 # Получение вакансий
-curl http://localhost:8080/api/vacancy
+curl http://localhost:8080/api/vacancies
 ```
 
 ### 2. Работа с UUID
