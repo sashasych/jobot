@@ -17,6 +17,7 @@ type UserRepository interface {
 type EmployeeRepository interface {
 	CreateEmployee(ctx context.Context, employeeService *models.Employee) error
 	GetEmployee(ctx context.Context, id uuid.UUID) (*models.Employee, error)
+	GetEmployeeByUserID(ctx context.Context, userID uuid.UUID) (*models.Employee, error)
 	UpdateEmployee(ctx context.Context, employeeService *models.Employee) error
 	DeleteEmployee(ctx context.Context, id uuid.UUID) error
 }
@@ -24,6 +25,7 @@ type EmployeeRepository interface {
 type EmployerRepository interface {
 	CreateEmployer(ctx context.Context, employerService *models.Employer) error
 	GetEmployer(ctx context.Context, id uuid.UUID) (*models.Employer, error)
+	GetEmployerByUserID(ctx context.Context, userID uuid.UUID) (*models.Employer, error)
 	UpdateEmployer(ctx context.Context, employerService *models.Employer) error
 	DeleteEmployer(ctx context.Context, id uuid.UUID) error
 }
@@ -31,6 +33,7 @@ type EmployerRepository interface {
 type ResumeRepository interface {
 	CreateResume(ctx context.Context, resumeService *models.Resume) error
 	GetResume(ctx context.Context, id uuid.UUID) (*models.Resume, error)
+	GetResumeByEmployeeID(ctx context.Context, employeeID uuid.UUID) (*models.Resume, error)
 	UpdateResume(ctx context.Context, resumeService *models.Resume) error
 	DeleteResume(ctx context.Context, id uuid.UUID) error
 }
@@ -38,6 +41,7 @@ type ResumeRepository interface {
 type VacancyRepository interface {
 	CreateVacancy(ctx context.Context, vacancyService *models.Vacancy) error
 	GetVacancy(ctx context.Context, id uuid.UUID) (*models.Vacancy, error)
+	GetVacancyList(ctx context.Context) (*models.VacancyList, error)
 	GetVacanciesByEmployer(ctx context.Context, employerID uuid.UUID) (*models.EmployerVacancyList, error)
 	UpdateVacancy(ctx context.Context, vacancyService *models.Vacancy) error
 	DeleteVacancy(ctx context.Context, id uuid.UUID) error

@@ -29,8 +29,8 @@ type UserUpdateRequest struct {
 
 // Employee - модель сотрудника
 type Employee struct {
-	EmployeeID string    `json:"employee_id"`
-	UserID     string    `json:"user_id"`
+	EmployeeID uuid.UUID `json:"employee_id"`
+	UserID     uuid.UUID `json:"user_id"`
 	Tags       []string  `json:"tags"`
 	CreatedAt  time.Time `json:"created_at"`
 	UpdatedAt  time.Time `json:"updated_at"`
@@ -43,8 +43,8 @@ type EmployeeUpdateRequest struct {
 
 // Employer - модель работодателя
 type Employer struct {
-	EmployerID         string    `json:"employer_id"`
-	UserID             string    `json:"user_id"`
+	EmployerID         uuid.UUID `json:"employer_id"`
+	UserID             uuid.UUID `json:"user_id"`
 	CompanyName        string    `json:"company_name"`
 	CompanyDescription string    `json:"company_description"`
 	CompanyWebsite     string    `json:"company_website"`
@@ -79,8 +79,8 @@ type ResumeUpdateRequest struct {
 
 // Vacancy - модель вакансии
 type Vacancy struct {
-	VacansieID  string    `json:"vacansie_id"`
-	EmployerID  string    `json:"employer_id"`
+	VacansieID  uuid.UUID `json:"vacansie_id"`
+	EmployerID  uuid.UUID `json:"employer_id"`
 	Tags        []string  `json:"tags"`
 	Title       string    `json:"title"`
 	Description string    `json:"description"`

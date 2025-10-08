@@ -79,7 +79,7 @@ func CreateHTTPServerWithChi(ctx context.Context, cfg *ConfigHTTPServer, control
 			r.Post("/", controller.EmployeeController.CreateEmployee)
 
 			r.Route("/{EmployeeID}", func(r chi.Router) {
-				r.Get("/reactions", controller.EmployeeController.GetEmployeeListReactions)
+				r.Get("/reactions", controller.ReactionController.GetEmployeeReactions)
 				r.Get("/", controller.EmployeeController.GetEmployee)
 				r.Put("/", controller.EmployeeController.UpdateEmployee)
 				r.Delete("/", controller.EmployeeController.DeleteEmployee)
@@ -89,7 +89,6 @@ func CreateHTTPServerWithChi(ctx context.Context, cfg *ConfigHTTPServer, control
 		// Resume routes
 		r.Route("/resumes", func(r chi.Router) {
 			r.Post("/", controller.ResumeController.CreateResume)
-			r.Get("/user/{EmployeeID}", controller.ResumeController.GetEmployeeListResumes)
 
 			r.Route("/{ResumeID}", func(r chi.Router) {
 				r.Get("/", controller.ResumeController.GetResume)
@@ -104,7 +103,7 @@ func CreateHTTPServerWithChi(ctx context.Context, cfg *ConfigHTTPServer, control
 
 			r.Route("/{EmployerID}", func(r chi.Router) {
 				r.Get("/", controller.EmployerController.GetEmployer)
-				r.Get("/vacansies", controller.EmployerController.GetEmployerListVacansies)
+				r.Get("/vacansies", controller.VacancyController.GetEmployerVacancies)
 				r.Put("/", controller.EmployerController.UpdateEmployer)
 				r.Delete("/", controller.EmployerController.DeleteEmployer)
 			})
@@ -112,13 +111,13 @@ func CreateHTTPServerWithChi(ctx context.Context, cfg *ConfigHTTPServer, control
 
 		// Job posting routes (vacansies)
 		r.Route("/vacansies", func(r chi.Router) {
-			r.Post("/", controller.VacancyController.CreateVacansy)
-			r.Get("/", controller.VacancyController.GetVacansyList)
+			r.Post("/", controller.VacancyController.CreateVacancy)
+			r.Get("/", controller.VacancyController.GetVacancyList)
 
-			r.Route("/{VacansieID}", func(r chi.Router) {
-				r.Get("/", controller.VacancyController.GetVacansy)
-				r.Put("/", controller.VacancyController.UpdateVacansy)
-				r.Delete("/", controller.VacancyController.DeleteVacansy)
+			r.Route("/{VacansyID}", func(r chi.Router) {
+				r.Get("/", controller.VacancyController.GetVacancy)
+				r.Put("/", controller.VacancyController.UpdateVacancy)
+				r.Delete("/", controller.VacancyController.DeleteVacancy)
 			})
 		})
 

@@ -68,6 +68,11 @@ type EmployerVacancyList struct {
 	EmployerID uuid.UUID `json:"employer_id"`
 }
 
+// VacancyList - модель списка вакансий
+type VacancyList struct {
+	Vacansies []Vacancy `json:"vacansies"`
+}
+
 // Reaction - модель реакции
 type Reaction struct {
 	ID         uuid.UUID `json:"id"`
