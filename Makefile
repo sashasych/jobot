@@ -122,23 +122,66 @@ dev-status:
 	docker compose -f $(DOCKER_COMPOSE_FILE) ps
 
 # Database commands
-.PHONY: db-migrate db-seed db-reset
+.PHONY: db-migrate db-migrate-up db-migrate-reset db-status db-psql db-create db-drop db-reset
 
 # Run database migrations
-db-migrate:
-	@echo "Running database migrations..."
-	# Add migration commands here
+db-migrate: db-migrate-up
 
-# Seed database with sample data
-db-seed:
-	@echo "Seeding database..."
-	# Add seed commands here
+# Apply all migrations
+db-migrate-up:
+	@echo "Applying database migrations..."
+	@bash scripts/apply_migrations.sh
 
-# Reset database
+# Reset and reapply all migrations
+db-migrate-reset:
+	@echo "Resetting and reapplying migrations..."
+	@echo "WARNING: This will drop all tables!"
+	@read -p "Are you sure? [y/N] " -n 1 -r; \
+	echo; \
+	if [[ $$REPLY =~ ^[Yy]$$ ]]; then \
+		docker compose -f $(DOCKER_COMPOSE_FILE) down -v; \
+		docker compose -f $(DOCKER_COMPOSE_FILE) up -d postgres; \
+		echo "Waiting for database..."; \
+		sleep 5; \
+		bash scripts/apply_migrations.sh; \
+	fi
+
+# Show database status
+db-status:
+	@echo "Database status:"
+	@docker compose -f $(DOCKER_COMPOSE_FILE) ps postgres
+
+# Connect to database with psql
+db-psql:
+	@echo "Connecting to database..."
+	@docker compose -f $(DOCKER_COMPOSE_FILE) exec postgres psql -U postgres -d jobot
+
+# Create database
+db-create:
+	@echo "Creating database..."
+	@docker compose -f $(DOCKER_COMPOSE_FILE) exec postgres psql -U postgres -c "CREATE DATABASE jobot;"
+
+# Drop database
+db-drop:
+	@echo "Dropping database..."
+	@echo "WARNING: This will delete all data!"
+	@read -p "Are you sure? [y/N] " -n 1 -r; \
+	echo; \
+	if [[ $$REPLY =~ ^[Yy]$$ ]]; then \
+		docker compose -f $(DOCKER_COMPOSE_FILE) exec postgres psql -U postgres -c "DROP DATABASE IF EXISTS jobot;"; \
+	fi
+
+# Reset database (drop, create, migrate)
 db-reset:
 	@echo "Resetting database..."
-	docker compose -f $(DOCKER_COMPOSE_FILE) down -v
-	docker compose -f $(DOCKER_COMPOSE_FILE) up -d postgres
+	@echo "WARNING: This will delete all data!"
+	@read -p "Are you sure? [y/N] " -n 1 -r; \
+	echo; \
+	if [[ $$REPLY =~ ^[Yy]$$ ]]; then \
+		$(MAKE) db-drop; \
+		$(MAKE) db-create; \
+		$(MAKE) db-migrate; \
+	fi
 
 # Help
 .PHONY: help
@@ -172,9 +215,14 @@ help:
 	@echo "  dev-status  - Check service status"
 	@echo ""
 	@echo "Database commands:"
-	@echo "  db-migrate  - Run database migrations"
-	@echo "  db-seed     - Seed database with sample data"
-	@echo "  db-reset    - Reset database"
+	@echo "  db-migrate        - Apply all database migrations"
+	@echo "  db-migrate-up     - Apply all database migrations"
+	@echo "  db-migrate-reset  - Reset and reapply all migrations"
+	@echo "  db-status         - Show database status"
+	@echo "  db-psql           - Connect to database with psql"
+	@echo "  db-create         - Create database"
+	@echo "  db-drop           - Drop database"
+	@echo "  db-reset          - Reset database (drop, create, migrate)"
 	@echo ""
 	@echo "Other:"
 	@echo "  help        - Show this help message"
