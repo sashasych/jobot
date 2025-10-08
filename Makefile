@@ -93,6 +93,32 @@ docker-clean:
 	docker compose -f $(DOCKER_COMPOSE_FILE) down -v --rmi all
 	docker system prune -f
 
+# API Documentation commands
+.PHONY: api-docs api-docs-open api-validate
+
+# Open API documentation
+api-docs-open:
+	@echo "Opening Swagger UI..."
+	@echo "URL: http://localhost:8080/api/docs"
+	@command -v xdg-open >/dev/null 2>&1 && xdg-open http://localhost:8080/api/docs || \
+	command -v open >/dev/null 2>&1 && open http://localhost:8080/api/docs || \
+	echo "Please open http://localhost:8080/api/docs in your browser"
+
+# Show API documentation info
+api-docs:
+	@echo "API Documentation:"
+	@echo "  Swagger UI:  http://localhost:8080/api/docs"
+	@echo "  OpenAPI YAML: http://localhost:8080/api/swagger.yaml"
+	@echo "  OpenAPI JSON: http://localhost:8080/api/swagger.json"
+	@echo ""
+	@echo "To open Swagger UI, run: make api-docs-open"
+
+# Validate OpenAPI specification
+api-validate:
+	@echo "Validating OpenAPI specification..."
+	@command -v swagger >/dev/null 2>&1 && swagger validate api/swagger.yaml || \
+	echo "swagger CLI not installed. Install with: npm install -g swagger-cli"
+
 # Development commands
 .PHONY: dev-setup dev-start dev-stop dev-status
 
@@ -207,6 +233,11 @@ help:
 	@echo "  docker-logs-db      - View database logs"
 	@echo "  docker-rebuild      - Rebuild and restart services"
 	@echo "  docker-clean        - Clean Docker resources"
+	@echo ""
+	@echo "API Documentation commands:"
+	@echo "  api-docs         - Show API documentation URLs"
+	@echo "  api-docs-open    - Open Swagger UI in browser"
+	@echo "  api-validate     - Validate OpenAPI specification"
 	@echo ""
 	@echo "Development commands:"
 	@echo "  dev-setup   - Setup development environment"

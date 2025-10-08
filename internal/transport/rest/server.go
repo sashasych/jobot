@@ -61,6 +61,19 @@ func CreateHTTPServerWithChi(ctx context.Context, cfg *ConfigHTTPServer, control
 		})
 	})
 
+	// Swagger documentation
+	r.Get("/api/docs", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "api/swagger-ui.html")
+	})
+	r.Get("/api/swagger.yaml", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/x-yaml")
+		http.ServeFile(w, r, "api/swagger.yaml")
+	})
+	r.Get("/api/swagger.json", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		http.ServeFile(w, r, "api/swagger.json")
+	})
+
 	// API routes
 	r.Route("/api", func(r chi.Router) {
 		// User routes

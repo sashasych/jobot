@@ -1,0 +1,1008 @@
+openapi: 3.0.3
+info:
+  title: Jobot API
+  description: |
+    REST API для Telegram бота Jobot - системы поиска работы и размещения вакансий.
+    
+    ## Возможности
+    - Управление пользователями (сотрудники и работодатели)
+    - Создание и управление профилями
+    - Публикация вакансий
+    - Загрузка резюме
+    - Система лайков (matching)
+    
+  version: 2.0.0
+  contact:
+    name: Jobot Team
+    url: https://github.com/sashasych/jobot
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:8080
+    description: Development server
+  - url: https://api.jobot.com
+    description: Production server
+
+tags:
+  - name: health
+    description: Health check endpoints
+  - name: users
+    description: Операции с пользователями
+  - name: employees
+    description: Операции с сотрудниками (соискателями)
+  - name: employers
+    description: Операции с работодателями (компаниями)
+  - name: resumes
+    description: Операции с резюме
+  - name: vacancies
+    description: Операции с вакансиями
+  - name: reactions
+    description: Операции с реакциями (лайками)
+
+paths:
+  /health:
+    get:
+      tags:
+        - health
+      summary: Health check
+      description: Проверка состояния API сервиса
+      operationId: healthCheck
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  service:
+                    type: string
+                    example: jobot
+
+  /api/user:
+    post:
+      tags:
+        - users
+      summary: Создать пользователя
+      description: Создание нового пользователя Telegram бота
+      operationId: createUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreateRequest'
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/user/{userId}:
+    get:
+      tags:
+        - users
+      summary: Получить пользователя
+      description: Получение пользователя по ID
+      operationId: getUserById
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: UUID пользователя
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    
+    put:
+      tags:
+        - users
+      summary: Обновить пользователя
+      description: Обновление данных пользователя
+      operationId: updateUser
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdateRequest'
+      responses:
+        '200':
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          description: Bad request
+        '404':
+          description: User not found
+    
+    delete:
+      tags:
+        - users
+      summary: Удалить пользователя
+      description: Удаление пользователя и всех связанных данных
+      operationId: deleteUser
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: User deleted successfully
+        '404':
+          description: User not found
+
+  /api/employee:
+    post:
+      tags:
+        - employees
+      summary: Создать профиль сотрудника
+      description: Создание профиля соискателя
+      operationId: createEmployee
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployeeCreateRequest'
+      responses:
+        '201':
+          description: Employee created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployeeResponse'
+        '400':
+          description: Bad request
+
+  /api/employee/{employeeId}:
+    get:
+      tags:
+        - employees
+      summary: Получить сотрудника
+      operationId: getEmployeeById
+      parameters:
+        - name: employeeId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployeeResponse'
+        '404':
+          description: Employee not found
+    
+    put:
+      tags:
+        - employees
+      summary: Обновить сотрудника
+      operationId: updateEmployee
+      parameters:
+        - name: employeeId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployeeUpdateRequest'
+      responses:
+        '200':
+          description: Employee updated successfully
+        '404':
+          description: Employee not found
+    
+    delete:
+      tags:
+        - employees
+      summary: Удалить сотрудника
+      operationId: deleteEmployee
+      parameters:
+        - name: employeeId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Employee deleted successfully
+        '404':
+          description: Employee not found
+
+  /api/employer:
+    post:
+      tags:
+        - employers
+      summary: Создать профиль работодателя
+      operationId: createEmployer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployerCreateRequest'
+      responses:
+        '201':
+          description: Employer created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployerResponse'
+
+  /api/employer/{employerId}:
+    get:
+      tags:
+        - employers
+      summary: Получить работодателя
+      operationId: getEmployerById
+      parameters:
+        - name: employerId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployerResponse'
+    
+    put:
+      tags:
+        - employers
+      summary: Обновить работодателя
+      operationId: updateEmployer
+      parameters:
+        - name: employerId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployerUpdateRequest'
+      responses:
+        '200':
+          description: Employer updated successfully
+    
+    delete:
+      tags:
+        - employers
+      summary: Удалить работодателя
+      operationId: deleteEmployer
+      parameters:
+        - name: employerId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Employer deleted successfully
+
+  /api/resume:
+    post:
+      tags:
+        - resumes
+      summary: Загрузить резюме
+      operationId: createResume
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResumeCreateRequest'
+      responses:
+        '201':
+          description: Resume created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResumeResponse'
+
+  /api/resume/{resumeId}:
+    get:
+      tags:
+        - resumes
+      summary: Получить резюме
+      operationId: getResumeById
+      parameters:
+        - name: resumeId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResumeResponse'
+    
+    put:
+      tags:
+        - resumes
+      summary: Обновить резюме
+      operationId: updateResume
+      parameters:
+        - name: resumeId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResumeUpdateRequest'
+      responses:
+        '200':
+          description: Resume updated successfully
+    
+    delete:
+      tags:
+        - resumes
+      summary: Удалить резюме
+      operationId: deleteResume
+      parameters:
+        - name: resumeId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Resume deleted successfully
+
+  /api/vacancy:
+    post:
+      tags:
+        - vacancies
+      summary: Создать вакансию
+      operationId: createVacancy
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VacancyCreateRequest'
+      responses:
+        '201':
+          description: Vacancy created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VacancyResponse'
+    
+    get:
+      tags:
+        - vacancies
+      summary: Получить все вакансии
+      operationId: getAllVacancies
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VacancyListResponse'
+
+  /api/vacancy/{vacancyId}:
+    get:
+      tags:
+        - vacancies
+      summary: Получить вакансию
+      operationId: getVacancyById
+      parameters:
+        - name: vacancyId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VacancyResponse'
+    
+    put:
+      tags:
+        - vacancies
+      summary: Обновить вакансию
+      operationId: updateVacancy
+      parameters:
+        - name: vacancyId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VacancyUpdateRequest'
+      responses:
+        '200':
+          description: Vacancy updated successfully
+    
+    delete:
+      tags:
+        - vacancies
+      summary: Удалить вакансию
+      operationId: deleteVacancy
+      parameters:
+        - name: vacancyId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Vacancy deleted successfully
+
+  /api/vacancy/employer/{employerId}:
+    get:
+      tags:
+        - vacancies
+      summary: Получить вакансии работодателя
+      operationId: getEmployerVacancies
+      parameters:
+        - name: employerId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployerVacancyListResponse'
+
+  /api/reaction:
+    post:
+      tags:
+        - reactions
+      summary: Создать реакцию
+      description: Поставить лайк на вакансию
+      operationId: createReaction
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReactionCreateRequest'
+      responses:
+        '201':
+          description: Reaction created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReactionResponse'
+
+  /api/reaction/{reactionId}:
+    get:
+      tags:
+        - reactions
+      summary: Получить реакцию
+      operationId: getReactionById
+      parameters:
+        - name: reactionId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReactionResponse'
+    
+    delete:
+      tags:
+        - reactions
+      summary: Удалить реакцию
+      description: Отменить лайк
+      operationId: deleteReaction
+      parameters:
+        - name: reactionId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Reaction deleted successfully
+
+  /api/reaction/employee/{employeeId}:
+    get:
+      tags:
+        - reactions
+      summary: Получить реакции сотрудника
+      operationId: getEmployeeReactions
+      parameters:
+        - name: employeeId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployeeReactionListResponse'
+
+components:
+  schemas:
+    UserCreateRequest:
+      type: object
+      required:
+        - tg_chat_id
+        - role
+      properties:
+        tg_user_name:
+          type: string
+          example: john_doe
+          description: Имя пользователя в Telegram
+        tg_chat_id:
+          type: string
+          example: "123456789"
+          description: Уникальный ID чата Telegram
+        is_active:
+          type: boolean
+          default: true
+          description: Активен ли аккаунт
+        is_premium:
+          type: boolean
+          default: false
+          description: Премиум статус
+        role:
+          type: string
+          enum: [employee, employer]
+          description: Роль пользователя
+
+    UserUpdateRequest:
+      type: object
+      properties:
+        tg_user_name:
+          type: string
+        is_active:
+          type: boolean
+        is_premium:
+          type: boolean
+
+    UserResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            tg_user_name:
+              type: string
+            tg_chat_id:
+              type: string
+            is_active:
+              type: boolean
+            is_premium:
+              type: boolean
+            role:
+              type: string
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+
+    EmployeeCreateRequest:
+      type: object
+      required:
+        - user_id
+        - tags
+      properties:
+        user_id:
+          type: string
+          format: uuid
+        tags:
+          type: array
+          items:
+            type: string
+          example: ["golang", "postgresql", "docker"]
+
+    EmployeeUpdateRequest:
+      type: object
+      properties:
+        tags:
+          type: array
+          items:
+            type: string
+
+    EmployeeResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            employee_id:
+              type: string
+              format: uuid
+            user_id:
+              type: string
+              format: uuid
+            tags:
+              type: array
+              items:
+                type: string
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+
+    EmployerCreateRequest:
+      type: object
+      required:
+        - user_id
+        - company_name
+        - company_description
+        - company_location
+        - company_size
+      properties:
+        user_id:
+          type: string
+          format: uuid
+        company_name:
+          type: string
+          example: TechCorp Inc
+        company_description:
+          type: string
+          example: Leading technology company
+        company_website:
+          type: string
+          example: https://techcorp.com
+        company_location:
+          type: string
+          example: Москва, Россия
+        company_size:
+          type: string
+          example: 51-200
+
+    EmployerUpdateRequest:
+      type: object
+      properties:
+        company_name:
+          type: string
+        company_description:
+          type: string
+        company_website:
+          type: string
+        company_location:
+          type: string
+        company_size:
+          type: string
+
+    EmployerResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            employer_id:
+              type: string
+              format: uuid
+            user_id:
+              type: string
+              format: uuid
+            company_name:
+              type: string
+            company_description:
+              type: string
+            company_website:
+              type: string
+            company_location:
+              type: string
+            company_size:
+              type: string
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+
+    ResumeCreateRequest:
+      type: object
+      required:
+        - employee_id
+        - tg_file_id
+      properties:
+        employee_id:
+          type: string
+          format: uuid
+        tg_file_id:
+          type: string
+          example: BAADAgADZAAD1234567890
+
+    ResumeUpdateRequest:
+      type: object
+      properties:
+        tg_file_id:
+          type: string
+
+    ResumeResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            resume_id:
+              type: string
+              format: uuid
+            employee_id:
+              type: string
+              format: uuid
+            tg_file_id:
+              type: string
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+
+    VacancyCreateRequest:
+      type: object
+      required:
+        - employer_id
+        - tags
+        - title
+        - description
+        - location
+        - salary
+      properties:
+        employer_id:
+          type: string
+          format: uuid
+        tags:
+          type: array
+          items:
+            type: string
+          example: ["golang", "kubernetes", "senior"]
+        title:
+          type: string
+          example: Senior Backend Developer
+        description:
+          type: string
+          example: We are looking for an experienced developer...
+        location:
+          type: string
+          example: Москва (можно удалённо)
+        salary:
+          type: string
+          example: 250,000 - 350,000 руб/месяц
+
+    VacancyUpdateRequest:
+      type: object
+      properties:
+        tags:
+          type: array
+          items:
+            type: string
+        title:
+          type: string
+        description:
+          type: string
+        location:
+          type: string
+        salary:
+          type: string
+
+    VacancyResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            vacansie_id:
+              type: string
+              format: uuid
+            employer_id:
+              type: string
+              format: uuid
+            tags:
+              type: array
+              items:
+                type: string
+            title:
+              type: string
+            description:
+              type: string
+            location:
+              type: string
+            salary:
+              type: string
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+
+    VacancyListResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            vacansies:
+              type: array
+              items:
+                $ref: '#/components/schemas/VacancyResponse/properties/data'
+
+    EmployerVacancyListResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            vacansies:
+              type: array
+              items:
+                $ref: '#/components/schemas/VacancyResponse/properties/data'
+            employer_id:
+              type: string
+              format: uuid
+
+    ReactionCreateRequest:
+      type: object
+      required:
+        - employee_id
+        - vacansie_id
+        - reaction
+      properties:
+        employee_id:
+          type: string
+          format: uuid
+        vacansie_id:
+          type: string
+          format: uuid
+        reaction:
+          type: string
+          enum: [like, dislike]
+
+    ReactionResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            reaction_id:
+              type: string
+              format: uuid
+            employee_id:
+              type: string
+              format: uuid
+            vacansie_id:
+              type: string
+              format: uuid
+            created_at:
+              type: string
+              format: date-time
+
+    EmployeeReactionListResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            reactions_ids:
+              type: array
+              items:
+                type: string
+                format: uuid
+            employee_id:
+              type: string
+              format: uuid
+
+    SuccessResponse:
+      type: object
+      properties:
+        data:
+          type: object
+        message:
+          type: string
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        code:
+          type: integer
+        timestamp:
+          type: string
+          format: date-time
+

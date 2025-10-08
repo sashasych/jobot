@@ -1,0 +1,36 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Jobot API",
+    "description": "REST API для Telegram бота Jobot - системы поиска работы и размещения вакансий.\n\n## Возможности\n- Управление пользователями (сотрудники и работодатели)\n- Создание и управление профилями\n- Публикация вакансий\n- Загрузка резюме\n- Система лайков (matching)\n",
+    "version": "2.0.0",
+    "contact": {
+      "name": "Jobot Team",
+      "url": "https://github.com/sashasych/jobot"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "Development server"
+    },
+    {
+      "url": "https://api.jobot.com",
+      "description": "Production server"
+    }
+  ],
+  "tags": [
+    {"name": "health", "description": "Health check endpoints"},
+    {"name": "users", "description": "Операции с пользователями"},
+    {"name": "employees", "description": "Операции с сотрудниками"},
+    {"name": "employers", "description": "Операции с работодателями"},
+    {"name": "resumes", "description": "Операции с резюме"},
+    {"name": "vacancies", "description": "Операции с вакансиями"},
+    {"name": "reactions", "description": "Операции с реакциями"}
+  ]
+}
+

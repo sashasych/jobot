@@ -5,7 +5,14 @@
 [![Go Version](https://img.shields.io/badge/Go-1.21+-00ADD8?style=flat&logo=go)](https://golang.org)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15+-336791?style=flat&logo=postgresql)](https://www.postgresql.org)
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=flat&logo=docker)](https://www.docker.com)
+[![Swagger](https://img.shields.io/badge/API-Swagger-85EA2D?style=flat&logo=swagger)](http://localhost:8080/api/docs)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+---
+
+📖 **[API Documentation (Swagger UI)](http://localhost:8080/api/docs)** | 🧪 **[Quick Start](QUICKSTART.md)** | 📚 **[How to Use API](HOW_TO_USE_API.md)**
+
+---
 
 ## 📋 Описание
 
@@ -165,6 +172,7 @@ go run ./cmd/app
 
 - **API:** http://localhost:8080
 - **Health Check:** http://localhost:8080/health
+- **Swagger UI:** http://localhost:8080/api/docs 📖
 - **pgAdmin:** http://localhost:5050
 - **PostgreSQL:** localhost:5435
 
@@ -374,7 +382,13 @@ POST /api/reaction
 }
 ```
 
-Подробное тестирование API: [POSTMAN_TESTING.md](POSTMAN_TESTING.md)
+**Дополнительно:**
+- 📖 **Swagger UI**: http://localhost:8080/api/docs - интерактивная документация API
+- 📝 **OpenAPI спецификация**: 
+  - YAML: http://localhost:8080/api/swagger.yaml
+  - JSON: http://localhost:8080/api/swagger.json
+
+Подробное тестирование API: [POSTMAN_TESTING.md](POSTMAN_TESTING.md) | [Swagger Docs](api/README.md)
 
 ## 🗄️ База данных
 
@@ -483,7 +497,32 @@ TG_BOT_TOKEN=your_telegram_bot_token
 
 ## 🧪 Тестирование
 
-### Запуск тестов
+### Swagger UI (Рекомендуется)
+
+```bash
+# Запустите приложение
+make run
+
+# Откройте в браузере
+http://localhost:8080/api/docs
+```
+
+**Возможности:**
+- 🎯 Интерактивное тестирование всех endpoints
+- 📝 Автоматическая валидация запросов
+- 📊 Визуализация схем данных
+- 💡 Примеры запросов и ответов
+
+### Postman
+
+```bash
+# Импортируйте коллекцию
+# File → Import → postman_collection.json
+```
+
+См. [POSTMAN_TESTING.md](POSTMAN_TESTING.md)
+
+### Автоматические тесты
 
 ```bash
 # Все тесты
@@ -634,7 +673,9 @@ bash scripts/apply_migrations.sh
 - **[migrations/test_data.sql](migrations/test_data.sql)** - Тестовые данные
 
 ### API и тестирование
-- **[POSTMAN_TESTING.md](POSTMAN_TESTING.md)** - Тестирование API
+- **[api/README.md](api/README.md)** - Swagger API документация
+- **[api/swagger.yaml](api/swagger.yaml)** - OpenAPI 3.0 спецификация
+- **[POSTMAN_TESTING.md](POSTMAN_TESTING.md)** - Тестирование API через Postman
 - **[postman_collection.json](postman_collection.json)** - Postman коллекция
 
 ### Внутренняя документация

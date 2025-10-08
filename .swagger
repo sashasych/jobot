@@ -1,0 +1,6 @@
+Swagger UI: http://localhost:8080/api/docs
+
+Команды:
+  make api-docs       - Показать ссылки на документацию
+  make api-docs-open  - Открыть Swagger UI в браузере
+
