@@ -33,3 +33,10 @@ type UserResponse struct {
 	CreatedAt  time.Time `json:"created_at"`
 	UpdatedAt  time.Time `json:"updated_at"`
 }
+
+// UserProfileResponse - DTO для получения профиля пользователя (Service → API)
+type UserProfileResponse struct {
+	UserResponse
+	Employee *EmployeeResponse `json:"employee,omitempty"`
+	Employer *EmployerResponse `json:"employer,omitempty"`
+}

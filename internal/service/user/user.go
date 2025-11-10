@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"jobot/internal/repository"
 	"jobot/internal/service/models"
@@ -10,12 +11,18 @@ import (
 	"github.com/google/uuid"
 )
 
+var (
+	ErrUserRoleNotFound = errors.New("user role not found")
+)
+
 type UserService struct {
-	userRepository repository.UserRepository
+	userRepository     repository.UserRepository
+	employeeRepository repository.EmployeeRepository
+	employerRepository repository.EmployerRepository
 }
 
-func NewUserService(userRepository repository.UserRepository) *UserService {
-	return &UserService{userRepository: userRepository}
+func NewUserService(userRepository repository.UserRepository, employeeRepository repository.EmployeeRepository, employerRepository repository.EmployerRepository) *UserService {
+	return &UserService{userRepository: userRepository, employeeRepository: employeeRepository, employerRepository: employerRepository}
 }
 
 func (s *UserService) CreateUser(ctx context.Context, user *models.User) error {
@@ -78,4 +85,30 @@ func (s *UserService) DeleteUser(ctx context.Context, id uuid.UUID) error {
 	}
 
 	return nil
+}
+
+func (s *UserService) GetUserProfile(ctx context.Context, id uuid.UUID) (*models.UserProfileResponse, error) {
+	user, err := s.GetUser(ctx, id)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get user: %w", err)
+	}
+
+	switch user.Role {
+	case "employee":
+		employee, err := s.employeeRepository.GetEmployeeByUserID(ctx, id)
+		if err != nil {
+			return nil, fmt.Errorf("failed to get employee: %w", err)
+		}
+
+		return &models.UserProfileResponse{User: user, Employee: employee}, nil
+	case "employer":
+		employer, err := s.employerRepository.GetEmployerByUserID(ctx, id)
+		if err != nil {
+			return nil, fmt.Errorf("failed to get employer: %w", err)
+		}
+
+		return &models.UserProfileResponse{User: user, Employer: employer}, nil
+	default:
+		return nil, ErrUserRoleNotFound
+	}
 }

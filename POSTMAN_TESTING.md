@@ -99,6 +99,20 @@ POST /api/users
 GET /api/users/{{user_id}}
 ```
 
+### 3. Get User's Employee Profile (Получить профиль сотрудника)
+
+```http
+GET /api/users/{{user_id}}/employee
+```
+
+**Описание:** Удобный способ получить профиль сотрудника, зная только User ID (например, из Telegram чата).
+
+### 4. Get User's Employer Profile (Получить профиль работодателя)
+
+```http
+GET /api/users/{{user_id}}/employer
+```
+
 **Ответ (200 OK):**
 ```json
 {
@@ -116,7 +130,7 @@ GET /api/users/{{user_id}}
 }
 ```
 
-### 3. Update User (Обновить пользователя)
+### 5. Update User (Обновить пользователя)
 
 ```http
 PUT /api/users/{{user_id}}
@@ -143,7 +157,7 @@ PUT /api/users/{{user_id}}
 }
 ```
 
-### 4. Delete User (Удалить пользователя)
+### 6. Delete User (Удалить пользователя)
 
 ```http
 DELETE /api/users/{{user_id}}
@@ -199,7 +213,21 @@ POST /api/employees
 GET /api/employees/{{employee_id}}
 ```
 
-### 3. Update Employee
+### 3. Get Employee Resume
+
+```http
+GET /api/employees/{{employee_id}}/resume
+```
+
+**Описание:** Получить резюме, зная Employee ID (без дополнительного запроса).
+
+### 4. Get Employee Reactions
+
+```http
+GET /api/employees/{{employee_id}}/reactions
+```
+
+### 5. Update Employee
 
 ```http
 PUT /api/employees/{{employee_id}}
@@ -212,7 +240,7 @@ PUT /api/employees/{{employee_id}}
 }
 ```
 
-### 4. Delete Employee
+### 6. Delete Employee
 
 ```http
 DELETE /api/employees/{{employee_id}}
@@ -272,7 +300,15 @@ POST /api/employers
 GET /api/employers/{{employer_id}}
 ```
 
-### 3. Update Employer
+### 3. Get Employer Vacancies
+
+```http
+GET /api/employers/{{employer_id}}/vacancies
+```
+
+**Описание:** Получить все вакансии конкретного работодателя.
+
+### 4. Update Employer
 
 ```http
 PUT /api/employers/{{employer_id}}
@@ -287,7 +323,7 @@ PUT /api/employers/{{employer_id}}
 }
 ```
 
-### 4. Delete Employer
+### 5. Delete Employer
 
 ```http
 DELETE /api/employers/{{employer_id}}
@@ -436,24 +472,7 @@ GET /api/vacancies
 }
 ```
 
-### 4. Get Employer Vacancies (Вакансии работодателя)
-
-```http
-GET /api/employers/{{employer_id}}/vacansies
-```
-
-**Ответ (200 OK):**
-```json
-{
-  "data": {
-    "vacansies": [...],
-    "employer_id": "770e8400-e29b-41d4-a716-446655440001"
-  },
-  "message": ""
-}
-```
-
-### 5. Update Vacancy
+### 4. Update Vacancy
 
 ```http
 PUT /api/vacancies/{{vacancy_id}}
@@ -468,7 +487,7 @@ PUT /api/vacancies/{{vacancy_id}}
 }
 ```
 
-### 6. Delete Vacancy
+### 5. Delete Vacancy
 
 ```http
 DELETE /api/vacancies/{{vacancy_id}}
@@ -511,30 +530,10 @@ POST /api/reactions
 }
 ```
 
-### 2. Get Employee Reactions (Все реакции сотрудника)
-
+**Примечание:** Для получения реакций используйте endpoint сотрудников:
 ```http
 GET /api/employees/{{employee_id}}/reactions
 ```
-
-**Ответ (200 OK):**
-```json
-{
-  "data": {
-    "reactions_ids": [
-      "aa0e8400-e29b-41d4-a716-446655440001",
-      "aa0e8400-e29b-41d4-a716-446655440002"
-    ],
-    "employee_id": "660e8400-e29b-41d4-a716-446655440001"
-  },
-  "message": ""
-}
-```
-
-### 3. Delete Reaction (Отменить лайк)
-
-**Примечание:** В текущей версии endpoint для удаления отдельной реакции не реализован.  
-Для отмены лайка, получите список реакций и удалите через CASCADE при удалении employee.
 
 ---
 
@@ -546,11 +545,12 @@ GET /api/employees/{{employee_id}}/reactions
 
 1. **Health Check** - проверить, что API работает (`GET /health`)
 2. **Create User** (role: "employee") - создать пользователя (`POST /api/users`)
-3. **Create Employee** - создать профиль сотрудника (`POST /api/employees`)
+3. **Get Employee Profile** - получить профиль по user_id (`GET /api/users/{user_id}/employee`)
 4. **Create Resume** - загрузить резюме (`POST /api/resumes`)
-5. **Get All Vacancies** - посмотреть доступные вакансии (`GET /api/vacancies`)
-6. **Create Reaction** - поставить лайк на вакансию (`POST /api/reactions`)
-7. **Get Employee Reactions** - посмотреть свои лайки (`GET /api/employees/{id}/reactions`)
+5. **Get Employee Resume** - получить резюме (`GET /api/employees/{employee_id}/resume`)
+6. **Get All Vacancies** - посмотреть доступные вакансии (`GET /api/vacancies`)
+7. **Create Reaction** - поставить лайк на вакансию (`POST /api/reactions`)
+8. **Get Employee Reactions** - посмотреть свои лайки (`GET /api/employees/{id}/reactions`)
 
 ### Сценарий 2: Полный флоу работодателя
 
@@ -558,9 +558,9 @@ GET /api/employees/{{employee_id}}/reactions
 
 1. **Health Check** - проверить, что API работает (`GET /health`)
 2. **Create User** (role: "employer") - создать пользователя (`POST /api/users`)
-3. **Create Employer** - создать профиль компании (`POST /api/employers`)
+3. **Get Employer Profile** - получить профиль по user_id (`GET /api/users/{user_id}/employer`)
 4. **Create Vacancy** - опубликовать вакансию (`POST /api/vacancies`)
-5. **Get Employer Vacancies** - посмотреть свои вакансии (`GET /api/employers/{id}/vacansies`)
+5. **Get Employer Vacancies** - посмотреть свои вакансии (`GET /api/employers/{id}/vacancies`)
 6. **Update Vacancy** - обновить вакансию (`PUT /api/vacancies/{id}`)
 7. **Get Vacancy by ID** - проверить изменения (`GET /api/vacancies/{id}`)
 

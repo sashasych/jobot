@@ -170,6 +170,54 @@ paths:
         '404':
           description: User not found
 
+  /api/users/{userId}/employee:
+    get:
+      tags:
+        - users
+      summary: Получить профиль сотрудника пользователя
+      description: Получение профиля сотрудника по User ID
+      operationId: getUserEmployeeProfile
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployeeResponse'
+        '404':
+          description: Employee not found
+
+  /api/users/{userId}/employer:
+    get:
+      tags:
+        - users
+      summary: Получить профиль работодателя пользователя
+      description: Получение профиля работодателя по User ID
+      operationId: getUserEmployerProfile
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployerResponse'
+        '404':
+          description: Employer not found
+
   /api/employees:
     post:
       tags:
@@ -258,6 +306,52 @@ paths:
         '404':
           description: Employee not found
 
+  /api/employees/{employeeId}/resume:
+    get:
+      tags:
+        - employees
+      summary: Получить резюме сотрудника
+      description: Получение резюме по Employee ID
+      operationId: getEmployeeResume
+      parameters:
+        - name: employeeId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResumeResponse'
+        '404':
+          description: Resume not found
+
+  /api/employees/{employeeId}/reactions:
+    get:
+      tags:
+        - employees
+      summary: Получить реакции сотрудника
+      description: Получение всех реакций (лайков) сотрудника
+      operationId: getEmployeeReactions
+      parameters:
+        - name: employeeId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployeeReactionListResponse'
+
   /api/employers:
     post:
       tags:
@@ -336,6 +430,28 @@ paths:
       responses:
         '200':
           description: Employer deleted successfully
+
+  /api/employers/{employerId}/vacancies:
+    get:
+      tags:
+        - employers
+      summary: Получить вакансии работодателя
+      description: Получение всех вакансий конкретного работодателя
+      operationId: getEmployerVacancies
+      parameters:
+        - name: employerId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployerVacancyListResponse'
 
   /api/resumes:
     post:
@@ -508,27 +624,6 @@ paths:
         '200':
           description: Vacancy deleted successfully
 
-  /api/employers/{employerId}/vacansies:
-    get:
-      tags:
-        - vacancies
-      summary: Получить вакансии работодателя
-      operationId: getEmployerVacancies
-      parameters:
-        - name: employerId
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EmployerVacancyListResponse'
-
   /api/reactions:
     post:
       tags:
@@ -549,27 +644,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ReactionResponse'
-
-  /api/employees/{employeeId}/reactions:
-    get:
-      tags:
-        - reactions
-      summary: Получить реакции сотрудника
-      operationId: getEmployeeReactions
-      parameters:
-        - name: employeeId
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EmployeeReactionListResponse'
 
 components:
   schemas:

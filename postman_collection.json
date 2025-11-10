@@ -57,6 +57,34 @@
 					"response": []
 				},
 				{
+					"name": "Get User's Employee Profile",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/users/{{user_id}}/employee",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "{{user_id}}", "employee"]
+						},
+						"description": "Получение профиля сотрудника по User ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Get User's Employer Profile",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/users/{{employer_user_id}}/employer",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "{{employer_user_id}}", "employer"]
+						},
+						"description": "Получение профиля работодателя по User ID"
+					},
+					"response": []
+				},
+				{
 					"name": "Update User",
 					"request": {
 						"method": "PUT",
@@ -123,6 +151,20 @@
 							"path": ["api", "employees", "{{employee_id}}"]
 						},
 						"description": "Получение сотрудника по ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Employee Resume",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/employees/{{employee_id}}/resume",
+							"host": ["{{base_url}}"],
+							"path": ["api", "employees", "{{employee_id}}", "resume"]
+						},
+						"description": "Получение резюме сотрудника"
 					},
 					"response": []
 				},
@@ -216,9 +258,9 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/api/employers/{{employer_id}}/vacansies",
+							"raw": "{{base_url}}/api/employers/{{employer_id}}/vacancies",
 							"host": ["{{base_url}}"],
-							"path": ["api", "employers", "{{employer_id}}", "vacansies"]
+							"path": ["api", "employers", "{{employer_id}}", "vacancies"]
 						},
 						"description": "Получение всех вакансий работодателя"
 					},
@@ -379,20 +421,6 @@
 					"response": []
 				},
 				{
-					"name": "Get Employer Vacancies",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/api/employers/{{employer_id}}/vacansies",
-							"host": ["{{base_url}}"],
-							"path": ["api", "employers", "{{employer_id}}", "vacansies"]
-						},
-						"description": "Получение всех вакансий конкретного работодателя"
-					},
-					"response": []
-				},
-				{
 					"name": "Update Vacancy",
 					"request": {
 						"method": "PUT",
@@ -444,21 +472,7 @@
 							"host": ["{{base_url}}"],
 							"path": ["api", "reactions"]
 						},
-						"description": "Создание реакции (лайк) на вакансию"
-					},
-					"response": []
-				},
-				{
-					"name": "Get Employee Reactions",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/api/employees/{{employee_id}}/reactions",
-							"host": ["{{base_url}}"],
-							"path": ["api", "employees", "{{employee_id}}", "reactions"]
-						},
-						"description": "Получение всех реакций сотрудника"
+						"description": "Создание реакции (лайк) на вакансию. Для получения реакций см. GET /api/employees/{id}/reactions в секции Employees"
 					},
 					"response": []
 				}

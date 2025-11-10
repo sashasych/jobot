@@ -69,7 +69,7 @@ func (c *EmployeeController) GetEmployee(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	employee, err := c.employeeService.GetEmployeeByUserID(ctx, employeeUUID)
+	employee, err := c.employeeService.GetEmployee(ctx, employeeUUID)
 	if err != nil {
 		c.JSONSimpleError(w, err.Error(), http.StatusInternalServerError)
 
@@ -79,6 +79,31 @@ func (c *EmployeeController) GetEmployee(w http.ResponseWriter, r *http.Request)
 	c.JSONSimpleSuccess(w, http.StatusOK, converter.ServiceEmployeeToEmployeeResponse(employee))
 
 	log.Info("Get employee request completed")
+}
+
+func (c *EmployeeController) GetEmployeeByUserID(w http.ResponseWriter, r *http.Request) {
+	log := logger.FromContext(r.Context()).Named("get_employee_by_user_id")
+	ctx := logger.ContextWithLogger(r.Context(), log)
+
+	log.Info("Start get employee by user id request")
+
+	userUUID, err := c.GetUUIDFromPath(r, UserIDPathValue)
+	if err != nil {
+		c.JSONSimpleError(w, err.Error(), http.StatusBadRequest)
+
+		return
+	}
+
+	employee, err := c.employeeService.GetEmployeeByUserID(ctx, userUUID)
+	if err != nil {
+		c.JSONSimpleError(w, err.Error(), http.StatusInternalServerError)
+
+		return
+	}
+
+	c.JSONSimpleSuccess(w, http.StatusOK, converter.ServiceEmployeeToEmployeeResponse(employee))
+
+	log.Info("Get employee by user id request completed")
 }
 
 func (c *EmployeeController) UpdateEmployee(w http.ResponseWriter, r *http.Request) {

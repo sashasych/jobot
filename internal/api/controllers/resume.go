@@ -69,7 +69,32 @@ func (c *ResumeController) GetResume(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resume, err := c.resumeService.GetResumeByEmployeeID(ctx, resumeUUID)
+	resume, err := c.resumeService.GetResume(ctx, resumeUUID)
+	if err != nil {
+		c.JSONSimpleError(w, err.Error(), http.StatusInternalServerError)
+
+		return
+	}
+
+	c.JSONSimpleSuccess(w, http.StatusOK, converter.ServiceResumeToResumeResponse(resume))
+
+	log.Info("Get resume request completed")
+}
+
+func (c *ResumeController) GetResumeByEmployeeID(w http.ResponseWriter, r *http.Request) {
+	log := logger.FromContext(r.Context()).Named("get_resume")
+	ctx := logger.ContextWithLogger(r.Context(), log)
+
+	log.Info("Start get resume request")
+
+	employeeUUID, err := c.GetUUIDFromPath(r, EmployeeIDPathValue)
+	if err != nil {
+		c.JSONSimpleError(w, err.Error(), http.StatusBadRequest)
+
+		return
+	}
+
+	resume, err := c.resumeService.GetResumeByEmployeeID(ctx, employeeUUID)
 	if err != nil {
 		c.JSONSimpleError(w, err.Error(), http.StatusInternalServerError)
 

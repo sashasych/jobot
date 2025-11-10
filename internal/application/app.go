@@ -114,7 +114,7 @@ func (app *Application) InitializeControllers() error {
 	vacancyRepository := vacancyRepo.NewVacancyRepository(app.db)
 	reactionRepository := reactionRepo.NewReactionRepository(app.db)
 
-	userService := userSrv.NewUserService(userRepository)
+	userService := userSrv.NewUserService(userRepository, employeeRepository, employerRepository)
 	employeeService := employeeSrv.NewEmployeeService(employeeRepository)
 	resumeService := resumeSrv.NewResumeService(resumeRepository)
 	employerService := employerSrv.NewEmployerService(employerRepository)

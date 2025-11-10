@@ -79,9 +79,12 @@ func CreateHTTPServerWithChi(ctx context.Context, cfg *ConfigHTTPServer, control
 		// User routes
 		r.Route("/users", func(r chi.Router) {
 			r.Post("/", controller.UserController.CreateUser)
-			r.Put("/", controller.UserController.UpdateUser)
 
 			r.Route("/{UserID}", func(r chi.Router) {
+				r.Get("/profile", controller.UserController.GetUserProfile)
+				r.Get("/employee", controller.EmployeeController.GetEmployeeByUserID)
+				r.Get("/employer", controller.EmployerController.GetEmployerByUserID)
+				r.Put("/", controller.UserController.UpdateUser)
 				r.Get("/", controller.UserController.GetUser)
 				r.Delete("/", controller.UserController.DeleteUser)
 			})
@@ -92,6 +95,7 @@ func CreateHTTPServerWithChi(ctx context.Context, cfg *ConfigHTTPServer, control
 			r.Post("/", controller.EmployeeController.CreateEmployee)
 
 			r.Route("/{EmployeeID}", func(r chi.Router) {
+				r.Get("/resume", controller.ResumeController.GetResumeByEmployeeID)
 				r.Get("/reactions", controller.ReactionController.GetEmployeeReactions)
 				r.Get("/", controller.EmployeeController.GetEmployee)
 				r.Put("/", controller.EmployeeController.UpdateEmployee)
@@ -116,14 +120,14 @@ func CreateHTTPServerWithChi(ctx context.Context, cfg *ConfigHTTPServer, control
 
 			r.Route("/{EmployerID}", func(r chi.Router) {
 				r.Get("/", controller.EmployerController.GetEmployer)
-				r.Get("/vacansies", controller.VacancyController.GetEmployerVacancies)
+				r.Get("/vacancies", controller.VacancyController.GetEmployerVacancies)
 				r.Put("/", controller.EmployerController.UpdateEmployer)
 				r.Delete("/", controller.EmployerController.DeleteEmployer)
 			})
 		})
 
-		// Job posting routes (vacansies)
-		r.Route("/vacansies", func(r chi.Router) {
+		// Job posting routes (vacancies)
+		r.Route("/vacancies", func(r chi.Router) {
 			r.Post("/", controller.VacancyController.CreateVacancy)
 			r.Get("/", controller.VacancyController.GetVacancyList)
 
@@ -132,6 +136,7 @@ func CreateHTTPServerWithChi(ctx context.Context, cfg *ConfigHTTPServer, control
 				r.Put("/", controller.VacancyController.UpdateVacancy)
 				r.Delete("/", controller.VacancyController.DeleteVacancy)
 			})
+
 		})
 
 		// Reaction routes

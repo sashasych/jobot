@@ -51,6 +51,31 @@ func (c *UserController) CreateUser(w http.ResponseWriter, r *http.Request) {
 	log.Info("Create user request completed")
 }
 
+func (c *UserController) GetUserProfile(w http.ResponseWriter, r *http.Request) {
+	log := logger.FromContext(r.Context()).Named("get_user_profile")
+	ctx := logger.ContextWithLogger(r.Context(), log)
+
+	log.Info("Start get user profile request")
+
+	userUUID, err := c.GetUUIDFromPath(r, UserIDPathValue)
+	if err != nil {
+		c.JSONSimpleError(w, err.Error(), http.StatusBadRequest)
+
+		return
+	}
+
+	profile, err := c.userService.GetUserProfile(ctx, userUUID)
+	if err != nil {
+		c.handleUserServiceError(w, err)
+
+		return
+	}
+
+	c.JSONSimpleSuccess(w, http.StatusOK, profile)
+
+	log.Info("Get user profile request completed")
+}
+
 func (c *UserController) GetUser(w http.ResponseWriter, r *http.Request) {
 	log := logger.FromContext(r.Context()).Named("get_user")
 	ctx := logger.ContextWithLogger(r.Context(), log)

@@ -21,11 +21,13 @@ type UserController interface {
 	GetUser(w http.ResponseWriter, r *http.Request)
 	UpdateUser(w http.ResponseWriter, r *http.Request)
 	DeleteUser(w http.ResponseWriter, r *http.Request)
+	GetUserProfile(w http.ResponseWriter, r *http.Request)
 }
 
 type EmployeeController interface {
 	CreateEmployee(w http.ResponseWriter, r *http.Request)
 	GetEmployee(w http.ResponseWriter, r *http.Request)
+	GetEmployeeByUserID(w http.ResponseWriter, r *http.Request)
 	UpdateEmployee(w http.ResponseWriter, r *http.Request)
 	DeleteEmployee(w http.ResponseWriter, r *http.Request)
 }
@@ -33,6 +35,7 @@ type EmployeeController interface {
 type ResumeController interface {
 	CreateResume(w http.ResponseWriter, r *http.Request)
 	GetResume(w http.ResponseWriter, r *http.Request)
+	GetResumeByEmployeeID(w http.ResponseWriter, r *http.Request)
 	UpdateResume(w http.ResponseWriter, r *http.Request)
 	DeleteResume(w http.ResponseWriter, r *http.Request)
 }
@@ -40,6 +43,7 @@ type ResumeController interface {
 type EmployerController interface {
 	CreateEmployer(w http.ResponseWriter, r *http.Request)
 	GetEmployer(w http.ResponseWriter, r *http.Request)
+	GetEmployerByUserID(w http.ResponseWriter, r *http.Request)
 	UpdateEmployer(w http.ResponseWriter, r *http.Request)
 	DeleteEmployer(w http.ResponseWriter, r *http.Request)
 }

@@ -27,6 +27,15 @@ func (s *ResumeService) CreateResume(ctx context.Context, resume *models.Resume)
 	return s.resumeRepository.CreateResume(ctx, resume)
 }
 
+func (s *ResumeService) GetResume(ctx context.Context, id uuid.UUID) (*models.Resume, error) {
+	resume, err := s.resumeRepository.GetResume(ctx, id)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get resume: %w", err)
+	}
+
+	return resume, nil
+}
+
 func (s *ResumeService) GetResumeByEmployeeID(ctx context.Context, employeeID uuid.UUID) (*models.Resume, error) {
 	resume, err := s.resumeRepository.GetResumeByEmployeeID(ctx, employeeID)
 	if err != nil {

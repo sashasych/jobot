@@ -24,13 +24,15 @@ GET  /health
 
 ---
 
-### 👤 Users - Пользователи (4 endpoints)
+### 👤 Users - Пользователи (6 endpoints)
 
 ```
-POST   /api/users               # Создать пользователя
-GET    /api/users/{UserID}      # Получить пользователя по ID
-PUT    /api/users/{UserID}      # Обновить пользователя
-DELETE /api/users/{UserID}      # Удалить пользователя
+POST   /api/users                   # Создать пользователя
+GET    /api/users/{UserID}          # Получить пользователя по ID
+GET    /api/users/{UserID}/employee # Получить профиль сотрудника (вложенный)
+GET    /api/users/{UserID}/employer # Получить профиль работодателя (вложенный)
+PUT    /api/users/{UserID}          # Обновить пользователя
+DELETE /api/users/{UserID}          # Удалить пользователя
 ```
 
 **Параметры пути:**
@@ -40,27 +42,31 @@ DELETE /api/users/{UserID}      # Удалить пользователя
 ```bash
 curl -X POST http://localhost:8080/api/users -d '{"tg_chat_id":"123","role":"employee"}'
 curl http://localhost:8080/api/users/550e8400-e29b-41d4-a716-446655440001
+curl http://localhost:8080/api/users/550e8400-e29b-41d4-a716-446655440001/employee
+curl http://localhost:8080/api/users/550e8400-e29b-41d4-a716-446655440001/employer
 ```
 
 ---
 
-### 👨‍💼 Employees - Сотрудники (5 endpoints)
+### 👨‍💼 Employees - Сотрудники (6 endpoints)
 
 ```
 POST   /api/employees                       # Создать профиль сотрудника
 GET    /api/employees/{EmployeeID}          # Получить сотрудника по ID
-GET    /api/employees/{EmployeeID}/reactions # Получить реакции сотрудника
+GET    /api/employees/{EmployeeID}/resume   # Получить резюме сотрудника (вложенный)
+GET    /api/employees/{EmployeeID}/reactions # Получить реакции сотрудника (вложенный)
 PUT    /api/employees/{EmployeeID}          # Обновить сотрудника
 DELETE /api/employees/{EmployeeID}          # Удалить сотрудника
 ```
 
 **Параметры пути:**
-- `{EmployeeID}` - UUID сотрудника (или UserID для получения по user_id)
+- `{EmployeeID}` - UUID сотрудника
 
 **Примеры:**
 ```bash
 curl -X POST http://localhost:8080/api/employees -d '{"user_id":"...","tags":["golang"]}'
 curl http://localhost:8080/api/employees/660e8400-e29b-41d4-a716-446655440001
+curl http://localhost:8080/api/employees/660e8400-e29b-41d4-a716-446655440001/resume
 curl http://localhost:8080/api/employees/660e8400-e29b-41d4-a716-446655440001/reactions
 ```
 
@@ -71,19 +77,19 @@ curl http://localhost:8080/api/employees/660e8400-e29b-41d4-a716-446655440001/re
 ```
 POST   /api/employers                        # Создать профиль работодателя
 GET    /api/employers/{EmployerID}           # Получить работодателя по ID
-GET    /api/employers/{EmployerID}/vacansies # Получить вакансии работодателя
+GET    /api/employers/{EmployerID}/vacancies # Получить вакансии работодателя (вложенный)
 PUT    /api/employers/{EmployerID}           # Обновить работодателя
 DELETE /api/employers/{EmployerID}           # Удалить работодателя
 ```
 
 **Параметры пути:**
-- `{EmployerID}` - UUID работодателя (или UserID для получения по user_id)
+- `{EmployerID}` - UUID работодателя
 
 **Примеры:**
 ```bash
 curl -X POST http://localhost:8080/api/employers -d '{"user_id":"...","company_name":"TechCorp",...}'
 curl http://localhost:8080/api/employers/770e8400-e29b-41d4-a716-446655440001
-curl http://localhost:8080/api/employers/770e8400-e29b-41d4-a716-446655440001/vacansies
+curl http://localhost:8080/api/employers/770e8400-e29b-41d4-a716-446655440001/vacancies
 ```
 
 ---
@@ -130,15 +136,16 @@ curl http://localhost:8080/api/vacancies/990e8400-e29b-41d4-a716-446655440001
 
 ---
 
-### 👍 Reactions - Реакции (2 endpoints)
+### 👍 Reactions - Реакции (1 endpoint)
 
 ```
 POST   /api/reactions                            # Создать реакцию (лайк на вакансию)
-GET    /api/employees/{EmployeeID}/reactions    # Получить реакции сотрудника
 ```
 
-**Параметры пути:**
-- `{EmployeeID}` - UUID сотрудника
+**Примечание:** Для получения реакций используйте вложенный endpoint сотрудников:
+```
+GET    /api/employees/{EmployeeID}/reactions
+```
 
 **Примеры:**
 ```bash
@@ -150,35 +157,43 @@ curl http://localhost:8080/api/employees/660e8400-e29b-41d4-a716-446655440001/re
 
 ## 📊 Итоговая статистика
 
-- **Всего endpoints**: 26
+- **Всего endpoints**: 31
 - **Health check**: 1
-- **Users**: 4
-- **Employees**: 5 (включая вложенный /reactions)
-- **Employers**: 5 (включая вложенный /vacansies)
+- **Users**: 6 (включая вложенные /employee и /employer)
+- **Employees**: 6 (включая вложенные /resume и /reactions)
+- **Employers**: 5 (включая вложенный /vacancies)
 - **Resumes**: 4
 - **Vacancies**: 5
-- **Reactions**: 2
+- **Reactions**: 1 (+ 2 вложенных под employees)
 
 ---
 
 ## 🎯 Вложенные ресурсы (Nested Resources)
 
-### Реакции сотрудника
-```
-GET /api/employees/{EmployeeID}/reactions
-```
-Вместо `/api/reactions/employee/{EmployeeID}` используется вложенный ресурс.
+API использует вложенные ресурсы для связанных данных:
 
-### Вакансии работодателя
+### Под Users:
 ```
-GET /api/employers/{EmployerID}/vacansies
+GET /api/users/{UserID}/employee   # Профиль сотрудника пользователя
+GET /api/users/{UserID}/employer   # Профиль работодателя пользователя
 ```
-Вместо `/api/vacancies/employer/{EmployerID}` используется вложенный ресурс.
+
+### Под Employees:
+```
+GET /api/employees/{EmployeeID}/resume      # Резюме сотрудника
+GET /api/employees/{EmployeeID}/reactions   # Реакции сотрудника
+```
+
+### Под Employers:
+```
+GET /api/employers/{EmployerID}/vacancies   # Вакансии работодателя
+```
 
 **Преимущества вложенных ресурсов:**
 - ✅ Более понятная иерархия
 - ✅ RESTful дизайн
 - ✅ Семантически правильно: "реакции принадлежат сотруднику"
+- ✅ Меньше запросов (получаем связанные данные напрямую)
 
 ---
 
@@ -193,15 +208,16 @@ GET /api/employers/{EmployerID}/vacansies
 | `/api/vacancy` | `/api/vacancies` |
 | `/api/reaction` | `/api/reactions` |
 | `/api/reactions/{id}` | `/api/employees/{id}/reactions` |
+| `/api/vacancies/employer/{id}` | `/api/employers/{id}/vacancies` |
 
-### 2. Опечатка: vacansies vs vacancies
+### 2. Написание: vacancies (исправлено)
 
-**⚠️ Внимание:** В коде используется `vacansies` (с опечаткой) вместо `vacancies`:
+**✅ Обновлено:** В текущей версии используется правильное написание `vacancies`:
 ```
-GET /api/employers/{id}/vacansies  ← используется в коде
+GET /api/employers/{id}/vacancies  ← правильное написание
 ```
 
-Правильное написание было бы `vacancies`, но для consistency с остальным кодом (поля `vacansie_id` и т.д.) используется `vacansies`.
+**Примечание:** В других частях кода еще используется `vacansie_id` (с опечаткой), но endpoint использует правильное `vacancies`.
 
 ### 3. Path Parameters
 

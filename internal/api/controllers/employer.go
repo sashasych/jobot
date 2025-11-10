@@ -69,7 +69,32 @@ func (c *EmployerController) GetEmployer(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	employer, err := c.employerService.GetEmployerByUserID(ctx, employerUUID)
+	employer, err := c.employerService.GetEmployer(ctx, employerUUID)
+	if err != nil {
+		c.JSONSimpleError(w, err.Error(), http.StatusInternalServerError)
+
+		return
+	}
+
+	c.JSONSimpleSuccess(w, http.StatusOK, converter.ServiceEmployerToEmployerResponse(employer))
+
+	log.Info("Get employer request completed")
+}
+
+func (c *EmployerController) GetEmployerByUserID(w http.ResponseWriter, r *http.Request) {
+	log := logger.FromContext(r.Context()).Named("get_employer")
+	ctx := logger.ContextWithLogger(r.Context(), log)
+
+	log.Info("Start get employer request")
+
+	userUUID, err := c.GetUUIDFromPath(r, UserIDPathValue)
+	if err != nil {
+		c.JSONSimpleError(w, err.Error(), http.StatusBadRequest)
+
+		return
+	}
+
+	employer, err := c.employerService.GetEmployerByUserID(ctx, userUUID)
 	if err != nil {
 		c.JSONSimpleError(w, err.Error(), http.StatusInternalServerError)
 
