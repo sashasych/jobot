@@ -99,7 +99,43 @@ POST /api/users
 GET /api/users/{{user_id}}
 ```
 
-### 3. Get User's Employee Profile (Получить профиль сотрудника)
+### 3. Get User Profile (Получить профиль пользователя)
+
+```http
+GET /api/users/{{user_id}}/profile
+```
+
+**Описание:** Возвращает базовую информацию о пользователе и связанные профили (сотрудника и/или работодателя), если они существуют.
+
+**Ответ (200 OK):**
+```json
+{
+  "data": {
+    "user": {
+      "id": "550e8400-e29b-41d4-a716-446655440001",
+      "tg_user_name": "john_doe",
+      "tg_chat_id": "123456789",
+      "is_active": true,
+      "is_premium": false,
+      "role": "employee",
+      "created_at": "2024-01-15T10:30:00Z",
+      "updated_at": "2024-01-15T10:30:00Z"
+    },
+    "employee": {
+      "employee_id": "660e8400-e29b-41d4-a716-446655440001",
+      "user_id": "550e8400-e29b-41d4-a716-446655440001",
+      "tags": ["golang", "postgresql", "docker"],
+      "created_at": "2024-01-15T10:35:00Z",
+      "updated_at": "2024-01-15T10:35:00Z"
+    }
+  },
+  "message": ""
+}
+```
+
+> Если у пользователя нет профиля сотрудника или работодателя, соответствующие поля будут отсутствовать в ответе.
+
+### 4. Get User's Employee Profile (Получить профиль сотрудника)
 
 ```http
 GET /api/users/{{user_id}}/employee
@@ -107,7 +143,7 @@ GET /api/users/{{user_id}}/employee
 
 **Описание:** Удобный способ получить профиль сотрудника, зная только User ID (например, из Telegram чата).
 
-### 4. Get User's Employer Profile (Получить профиль работодателя)
+### 5. Get User's Employer Profile (Получить профиль работодателя)
 
 ```http
 GET /api/users/{{user_id}}/employer
@@ -130,7 +166,7 @@ GET /api/users/{{user_id}}/employer
 }
 ```
 
-### 5. Update User (Обновить пользователя)
+### 6. Update User (Обновить пользователя)
 
 ```http
 PUT /api/users/{{user_id}}
@@ -157,7 +193,7 @@ PUT /api/users/{{user_id}}
 }
 ```
 
-### 6. Delete User (Удалить пользователя)
+### 7. Delete User (Удалить пользователя)
 
 ```http
 DELETE /api/users/{{user_id}}
@@ -545,12 +581,13 @@ GET /api/employees/{{employee_id}}/reactions
 
 1. **Health Check** - проверить, что API работает (`GET /health`)
 2. **Create User** (role: "employee") - создать пользователя (`POST /api/users`)
-3. **Get Employee Profile** - получить профиль по user_id (`GET /api/users/{user_id}/employee`)
-4. **Create Resume** - загрузить резюме (`POST /api/resumes`)
-5. **Get Employee Resume** - получить резюме (`GET /api/employees/{employee_id}/resume`)
-6. **Get All Vacancies** - посмотреть доступные вакансии (`GET /api/vacancies`)
-7. **Create Reaction** - поставить лайк на вакансию (`POST /api/reactions`)
-8. **Get Employee Reactions** - посмотреть свои лайки (`GET /api/employees/{id}/reactions`)
+3. **Get User Profile** - проверить агрегированный профиль (`GET /api/users/{user_id}/profile`)
+4. **Get Employee Profile** - получить профиль сотрудника (`GET /api/users/{user_id}/employee`)
+5. **Create Resume** - загрузить резюме (`POST /api/resumes`)
+6. **Get Employee Resume** - получить резюме (`GET /api/employees/{employee_id}/resume`)
+7. **Get All Vacancies** - посмотреть доступные вакансии (`GET /api/vacancies`)
+8. **Create Reaction** - поставить лайк на вакансию (`POST /api/reactions`)
+9. **Get Employee Reactions** - посмотреть свои лайки (`GET /api/employees/{id}/reactions`)
 
 ### Сценарий 2: Полный флоу работодателя
 
@@ -558,11 +595,12 @@ GET /api/employees/{{employee_id}}/reactions
 
 1. **Health Check** - проверить, что API работает (`GET /health`)
 2. **Create User** (role: "employer") - создать пользователя (`POST /api/users`)
-3. **Get Employer Profile** - получить профиль по user_id (`GET /api/users/{user_id}/employer`)
-4. **Create Vacancy** - опубликовать вакансию (`POST /api/vacancies`)
-5. **Get Employer Vacancies** - посмотреть свои вакансии (`GET /api/employers/{id}/vacancies`)
-6. **Update Vacancy** - обновить вакансию (`PUT /api/vacancies/{id}`)
-7. **Get Vacancy by ID** - проверить изменения (`GET /api/vacancies/{id}`)
+3. **Get User Profile** - проверить агрегированный профиль (`GET /api/users/{user_id}/profile`)
+4. **Get Employer Profile** - получить профиль работодателя (`GET /api/users/{user_id}/employer`)
+5. **Create Vacancy** - опубликовать вакансию (`POST /api/vacancies`)
+6. **Get Employer Vacancies** - посмотреть свои вакансии (`GET /api/employers/{id}/vacancies`)
+7. **Update Vacancy** - обновить вакансию (`PUT /api/vacancies/{id}`)
+8. **Get Vacancy by ID** - проверить изменения (`GET /api/vacancies/{id}`)
 
 ### Сценарий 3: Matching (Соискатель ↔ Вакансия)
 

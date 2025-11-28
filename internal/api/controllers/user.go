@@ -30,27 +30,30 @@ func (c *UserController) CreateUser(w http.ResponseWriter, r *http.Request) {
 
 	log.Info("Start create user request")
 
-	user := &models.UserCreateRequest{}
+	req := &models.UserCreateRequest{}
 
-	err := c.ReadRequestBody(r, user)
+	err := c.ReadRequestBody(r, req)
 	if err != nil {
 		c.JSONSimpleError(w, err.Error(), http.StatusBadRequest)
 
 		return
 	}
 
-	err = c.userService.CreateUser(ctx, converter.UserCreateRequestToServiceUser(user))
+	serviceUser := converter.UserCreateRequestToServiceUser(req)
+
+	createdUser, err := c.userService.CreateUser(ctx, serviceUser)
 	if err != nil {
 		c.handleUserServiceError(w, err)
 
 		return
 	}
 
-	c.JSONSimpleSuccess(w, http.StatusCreated, user)
+	c.JSONSimpleSuccess(w, http.StatusCreated, createdUser)
 
 	log.Info("Create user request completed")
 }
 
+// TODO: Конвертер
 func (c *UserController) GetUserProfile(w http.ResponseWriter, r *http.Request) {
 	log := logger.FromContext(r.Context()).Named("get_user_profile")
 	ctx := logger.ContextWithLogger(r.Context(), log)
@@ -96,7 +99,7 @@ func (c *UserController) GetUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	c.JSONSimpleSuccess(w, http.StatusOK, user)
+	c.JSONSimpleSuccess(w, http.StatusOK, converter.ServiceUserToUserResponse(user))
 
 	log.Info("Get user request completed")
 }

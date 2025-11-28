@@ -19,13 +19,18 @@ func NewVacancyService(vacancyRepository repository.VacancyRepository) *VacancyS
 	return &VacancyService{vacancyRepository: vacancyRepository}
 }
 
-func (s *VacancyService) CreateVacancy(ctx context.Context, vacancy *models.Vacancy) error {
+func (s *VacancyService) CreateVacancy(ctx context.Context, vacancy *models.Vacancy) (*models.Vacancy, error) {
 	// Генерируем UUID для vacancy
 	vacancy.VacansieID = uuid.New()
-	vacancy.CreatedAt = time.Now()
-	vacancy.UpdatedAt = time.Now()
+	now := time.Now()
+	vacancy.CreatedAt = now
+	vacancy.UpdatedAt = now
 
-	return s.vacancyRepository.CreateVacancy(ctx, vacancy)
+	if err := s.vacancyRepository.CreateVacancy(ctx, vacancy); err != nil {
+		return nil, fmt.Errorf("failed to create vacancy: %w", err)
+	}
+
+	return vacancy, nil
 }
 
 func (s *VacancyService) GetVacancyByID(ctx context.Context, id uuid.UUID) (*models.Vacancy, error) {

@@ -19,11 +19,15 @@ func NewReactionService(reactionRepository repository.ReactionRepository) *React
 	return &ReactionService{reactionRepository: reactionRepository}
 }
 
-func (s *ReactionService) CreateReaction(ctx context.Context, reaction *models.Reaction) error {
+func (s *ReactionService) CreateReaction(ctx context.Context, reaction *models.Reaction) (*models.Reaction, error) {
 	reaction.ID = uuid.New()
 	reaction.CreatedAt = time.Now()
 
-	return s.reactionRepository.CreateReaction(ctx, reaction)
+	if err := s.reactionRepository.CreateReaction(ctx, reaction); err != nil {
+		return nil, fmt.Errorf("failed to create reaction: %w", err)
+	}
+
+	return reaction, nil
 }
 
 func (s *ReactionService) GetReaction(ctx context.Context, id uuid.UUID) (*models.Reaction, error) {

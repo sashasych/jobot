@@ -19,13 +19,18 @@ func NewEmployerService(employerRepository repository.EmployerRepository) *Emplo
 	return &EmployerService{employerRepository: employerRepository}
 }
 
-func (s *EmployerService) CreateEmployer(ctx context.Context, employer *models.Employer) error {
+func (s *EmployerService) CreateEmployer(ctx context.Context, employer *models.Employer) (*models.Employer, error) {
 	// Генерируем UUID для employer
 	employer.EmployerID = uuid.New()
-	employer.CreatedAt = time.Now()
-	employer.UpdatedAt = time.Now()
+	now := time.Now()
+	employer.CreatedAt = now
+	employer.UpdatedAt = now
 
-	return s.employerRepository.CreateEmployer(ctx, employer)
+	if err := s.employerRepository.CreateEmployer(ctx, employer); err != nil {
+		return nil, fmt.Errorf("failed to create employer: %w", err)
+	}
+
+	return employer, nil
 }
 
 func (s *EmployerService) GetEmployer(ctx context.Context, id uuid.UUID) (*models.Employer, error) {

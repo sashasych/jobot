@@ -24,11 +24,12 @@ GET  /health
 
 ---
 
-### 👤 Users - Пользователи (6 endpoints)
+### 👤 Users - Пользователи (7 endpoints)
 
 ```
 POST   /api/users                   # Создать пользователя
 GET    /api/users/{UserID}          # Получить пользователя по ID
+GET    /api/users/{UserID}/profile  # Получить полный профиль пользователя
 GET    /api/users/{UserID}/employee # Получить профиль сотрудника (вложенный)
 GET    /api/users/{UserID}/employer # Получить профиль работодателя (вложенный)
 PUT    /api/users/{UserID}          # Обновить пользователя
@@ -42,6 +43,7 @@ DELETE /api/users/{UserID}          # Удалить пользователя
 ```bash
 curl -X POST http://localhost:8080/api/users -d '{"tg_chat_id":"123","role":"employee"}'
 curl http://localhost:8080/api/users/550e8400-e29b-41d4-a716-446655440001
+curl http://localhost:8080/api/users/550e8400-e29b-41d4-a716-446655440001/profile
 curl http://localhost:8080/api/users/550e8400-e29b-41d4-a716-446655440001/employee
 curl http://localhost:8080/api/users/550e8400-e29b-41d4-a716-446655440001/employer
 ```
@@ -157,9 +159,9 @@ curl http://localhost:8080/api/employees/660e8400-e29b-41d4-a716-446655440001/re
 
 ## 📊 Итоговая статистика
 
-- **Всего endpoints**: 31
+- **Всего endpoints**: 32
 - **Health check**: 1
-- **Users**: 6 (включая вложенные /employee и /employer)
+- **Users**: 7 (включая вложенные /profile, /employee и /employer)
 - **Employees**: 6 (включая вложенные /resume и /reactions)
 - **Employers**: 5 (включая вложенный /vacancies)
 - **Resumes**: 4
@@ -174,6 +176,7 @@ API использует вложенные ресурсы для связанн
 
 ### Под Users:
 ```
+GET /api/users/{UserID}/profile    # Полный профиль пользователя
 GET /api/users/{UserID}/employee   # Профиль сотрудника пользователя
 GET /api/users/{UserID}/employer   # Профиль работодателя пользователя
 ```

@@ -57,6 +57,20 @@
 					"response": []
 				},
 				{
+					"name": "Get User Profile",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/users/{{user_id}}/profile",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "{{user_id}}", "profile"]
+						},
+						"description": "Получение полного профиля пользователя (учётная запись и связанные роли)"
+					},
+					"response": []
+				},
+				{
 					"name": "Get User's Employee Profile",
 					"request": {
 						"method": "GET",

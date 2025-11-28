@@ -123,8 +123,8 @@ type EmployeeReactionList struct {
 	EmployeeID uuid.UUID  `json:"employee_id"`
 }
 
-// UserProfileResponse - модель для получения профиля пользователя
-type UserProfileResponse struct {
+// UserProfile - модель профиля пользователя
+type UserProfile struct {
 	User     *User     `json:"user"`
 	Employee *Employee `json:"employee,omitempty"`
 	Employer *Employer `json:"employer,omitempty"`

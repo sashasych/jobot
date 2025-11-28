@@ -28,30 +28,30 @@ func (c *EmployerController) CreateEmployer(w http.ResponseWriter, r *http.Reque
 
 	log.Info("Start create employer request")
 
-	employer := &models.EmployerCreateRequest{}
+	req := &models.EmployerCreateRequest{}
 
-	err := c.ReadRequestBody(r, employer)
+	err := c.ReadRequestBody(r, req)
 	if err != nil {
 		c.JSONSimpleError(w, err.Error(), http.StatusBadRequest)
 
 		return
 	}
 
-	serviceEmployer, err := converter.EmployerCreateRequestToServiceEmployer(employer)
+	serviceEmployer, err := converter.EmployerCreateRequestToServiceEmployer(req)
 	if err != nil {
 		c.JSONSimpleError(w, err.Error(), http.StatusBadRequest)
 
 		return
 	}
 
-	err = c.employerService.CreateEmployer(ctx, serviceEmployer)
+	createdEmployer, err := c.employerService.CreateEmployer(ctx, serviceEmployer)
 	if err != nil {
 		c.JSONSimpleError(w, err.Error(), http.StatusInternalServerError)
 
 		return
 	}
 
-	c.JSONSimpleSuccess(w, http.StatusCreated, employer)
+	c.JSONSimpleSuccess(w, http.StatusCreated, converter.ServiceEmployerToEmployerResponse(createdEmployer))
 
 	log.Info("Create employer request completed")
 }
@@ -171,4 +171,3 @@ func (c *EmployerController) DeleteEmployer(w http.ResponseWriter, r *http.Reque
 
 	log.Info("Delete employer request completed")
 }
-

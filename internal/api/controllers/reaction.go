@@ -28,30 +28,33 @@ func (c *ReactionController) CreateReaction(w http.ResponseWriter, r *http.Reque
 
 	log.Info("Start create reaction request")
 
-	reaction := &models.ReactionCreateRequest{}
+	req := &models.ReactionCreateRequest{}
 
-	err := c.ReadRequestBody(r, reaction)
+	err := c.ReadRequestBody(r, req)
 	if err != nil {
 		c.JSONSimpleError(w, err.Error(), http.StatusBadRequest)
 
 		return
 	}
 
-	serviceReaction, err := converter.ReactionCreateRequestToServiceReaction(reaction)
+	serviceReaction, err := converter.ReactionCreateRequestToServiceReaction(req)
 	if err != nil {
 		c.JSONSimpleError(w, err.Error(), http.StatusBadRequest)
 
 		return
 	}
 
-	err = c.reactionService.CreateReaction(ctx, serviceReaction)
+	createdReaction, err := c.reactionService.CreateReaction(ctx, serviceReaction)
 	if err != nil {
 		c.JSONSimpleError(w, err.Error(), http.StatusInternalServerError)
 
 		return
 	}
 
-	c.JSONSimpleSuccess(w, http.StatusCreated, reaction)
+	response := converter.ServiceReactionToReactionResponse(createdReaction)
+	response.Reaction = req.Reaction
+
+	c.JSONSimpleSuccess(w, http.StatusCreated, response)
 
 	log.Info("Create reaction request completed")
 }

@@ -19,12 +19,17 @@ func NewResumeService(resumeRepository repository.ResumeRepository) *ResumeServi
 	return &ResumeService{resumeRepository: resumeRepository}
 }
 
-func (s *ResumeService) CreateResume(ctx context.Context, resume *models.Resume) error {
+func (s *ResumeService) CreateResume(ctx context.Context, resume *models.Resume) (*models.Resume, error) {
 	resume.ResumeID = uuid.New()
-	resume.CreatedAt = time.Now()
-	resume.UpdatedAt = time.Now()
+	now := time.Now()
+	resume.CreatedAt = now
+	resume.UpdatedAt = now
 
-	return s.resumeRepository.CreateResume(ctx, resume)
+	if err := s.resumeRepository.CreateResume(ctx, resume); err != nil {
+		return nil, fmt.Errorf("failed to create resume: %w", err)
+	}
+
+	return resume, nil
 }
 
 func (s *ResumeService) GetResume(ctx context.Context, id uuid.UUID) (*models.Resume, error) {

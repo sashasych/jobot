@@ -170,6 +170,30 @@ paths:
         '404':
           description: User not found
 
+  /api/users/{userId}/profile:
+    get:
+      tags:
+        - users
+      summary: Получить профиль пользователя
+      description: Возвращает основную информацию о пользователе и связанные профили сотрудника и/или работодателя
+      operationId: getUserProfile
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfileResponse'
+        '404':
+          description: User not found
+
   /api/users/{userId}/employee:
     get:
       tags:
@@ -709,6 +733,21 @@ components:
             updated_at:
               type: string
               format: date-time
+
+    UserProfileResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            user:
+              $ref: '#/components/schemas/UserResponse/properties/data'
+            employee:
+              $ref: '#/components/schemas/EmployeeResponse/properties/data'
+            employer:
+              $ref: '#/components/schemas/EmployerResponse/properties/data'
+        message:
+          type: string
 
     EmployeeCreateRequest:
       type: object

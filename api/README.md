@@ -70,6 +70,7 @@ GET /health - Проверка состояния API
 ```
 POST   /api/users           - Создать пользователя
 GET    /api/users/{id}      - Получить пользователя
+GET    /api/users/{id}/profile - Получить полный профиль пользователя
 PUT    /api/users/{id}      - Обновить пользователя
 DELETE /api/users/{id}      - Удалить пользователя
 ```

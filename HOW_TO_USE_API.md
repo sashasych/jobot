@@ -36,12 +36,13 @@ http://localhost:8080/api/docs
 
 ```
 1. Создать аккаунт       → POST /api/users (role: employee)
-2. Получить профиль      → GET /api/users/{id}/employee
-3. Загрузить резюме      → POST /api/resumes
-4. Получить своё резюме  → GET /api/employees/{id}/resume
-5. Посмотреть вакансии   → GET /api/vacancies
-6. Поставить лайк        → POST /api/reactions
-7. Посмотреть свои лайки → GET /api/employees/{id}/reactions
+2. Проверить профиль     → GET /api/users/{id}/profile
+3. Получить профиль      → GET /api/users/{id}/employee
+4. Загрузить резюме      → POST /api/resumes
+5. Получить своё резюме  → GET /api/employees/{id}/resume
+6. Посмотреть вакансии   → GET /api/vacancies
+7. Поставить лайк        → POST /api/reactions
+8. Посмотреть свои лайки → GET /api/employees/{id}/reactions
 ```
 
 **Попробуйте в Swagger UI:**
@@ -51,10 +52,11 @@ http://localhost:8080/api/docs
 
 ```
 1. Создать аккаунт       → POST /api/users (role: employer)
-2. Получить профиль      → GET /api/users/{id}/employer
-3. Опубликовать вакансию → POST /api/vacancies
-4. Посмотреть вакансии   → GET /api/employers/{id}/vacancies
-5. Обновить вакансию     → PUT /api/vacancies/{id}
+2. Проверить профиль     → GET /api/users/{id}/profile
+3. Получить профиль      → GET /api/users/{id}/employer
+4. Опубликовать вакансию → POST /api/vacancies
+5. Посмотреть вакансии   → GET /api/employers/{id}/vacancies
+6. Обновить вакансию     → PUT /api/vacancies/{id}
 ```
 
 **Попробуйте в Swagger UI:**

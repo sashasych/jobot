@@ -19,13 +19,18 @@ func NewEmployeeService(employeeRepository repository.EmployeeRepository) *Emplo
 	return &EmployeeService{employeeRepository: employeeRepository}
 }
 
-func (s *EmployeeService) CreateEmployee(ctx context.Context, employee *models.Employee) error {
+func (s *EmployeeService) CreateEmployee(ctx context.Context, employee *models.Employee) (*models.Employee, error) {
 	// Генерируем UUID для employee
 	employee.EmployeeID = uuid.New()
-	employee.CreatedAt = time.Now()
-	employee.UpdatedAt = time.Now()
+	now := time.Now()
+	employee.CreatedAt = now
+	employee.UpdatedAt = now
 
-	return s.employeeRepository.CreateEmployee(ctx, employee)
+	if err := s.employeeRepository.CreateEmployee(ctx, employee); err != nil {
+		return nil, fmt.Errorf("failed to create employee: %w", err)
+	}
+
+	return employee, nil
 }
 
 func (s *EmployeeService) GetEmployee(ctx context.Context, id uuid.UUID) (*models.Employee, error) {

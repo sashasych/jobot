@@ -28,30 +28,30 @@ func (c *EmployeeController) CreateEmployee(w http.ResponseWriter, r *http.Reque
 
 	log.Info("Start create employee request")
 
-	employee := &models.EmployeeCreateRequest{}
+	req := &models.EmployeeCreateRequest{}
 
-	err := c.ReadRequestBody(r, employee)
+	err := c.ReadRequestBody(r, req)
 	if err != nil {
 		c.JSONSimpleError(w, err.Error(), http.StatusBadRequest)
 
 		return
 	}
 
-	serviceEmployee, err := converter.EmployeeCreateRequestToServiceEmployee(employee)
+	serviceEmployee, err := converter.EmployeeCreateRequestToServiceEmployee(req)
 	if err != nil {
 		c.JSONSimpleError(w, err.Error(), http.StatusBadRequest)
 
 		return
 	}
 
-	err = c.employeeService.CreateEmployee(ctx, serviceEmployee)
+	createdEmployee, err := c.employeeService.CreateEmployee(ctx, serviceEmployee)
 	if err != nil {
 		c.JSONSimpleError(w, err.Error(), http.StatusInternalServerError)
 
 		return
 	}
 
-	c.JSONSimpleSuccess(w, http.StatusCreated, employee)
+	c.JSONSimpleSuccess(w, http.StatusCreated, converter.ServiceEmployeeToEmployeeResponse(createdEmployee))
 
 	log.Info("Create employee request completed")
 }

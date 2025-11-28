@@ -113,10 +113,15 @@ employeeRepo := employeerepository.NewEmployeeRepository(db)
 employeeService := employee.NewEmployeeService(employeeRepo)
 
 // Использование сервиса
-err := employeeService.CreateEmployee(ctx, &models.Employee{
+createdEmployee, err := employeeService.CreateEmployee(ctx, &models.Employee{
     UserID: "user-uuid",
     Tags:   []string{"golang", "backend"},
 })
+if err != nil {
+    // handle error
+}
+
+// createdEmployee содержит новые поля ID, CreatedAt и UpdatedAt
 ```
 
 ### Пример обновления

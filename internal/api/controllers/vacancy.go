@@ -28,30 +28,30 @@ func (c *VacancyController) CreateVacancy(w http.ResponseWriter, r *http.Request
 
 	log.Info("Start create vacancy request")
 
-	vacancy := &models.VacansieCreateRequest{}
+	req := &models.VacansieCreateRequest{}
 
-	err := c.ReadRequestBody(r, vacancy)
+	err := c.ReadRequestBody(r, req)
 	if err != nil {
 		c.JSONSimpleError(w, err.Error(), http.StatusBadRequest)
 
 		return
 	}
 
-	serviceVacancy, err := converter.VacancyCreateRequestToServiceVacancy(vacancy)
+	serviceVacancy, err := converter.VacancyCreateRequestToServiceVacancy(req)
 	if err != nil {
 		c.JSONSimpleError(w, err.Error(), http.StatusBadRequest)
 
 		return
 	}
 
-	err = c.vacancyService.CreateVacancy(ctx, serviceVacancy)
+	createdVacancy, err := c.vacancyService.CreateVacancy(ctx, serviceVacancy)
 	if err != nil {
 		c.JSONSimpleError(w, err.Error(), http.StatusInternalServerError)
 
 		return
 	}
 
-	c.JSONSimpleSuccess(w, http.StatusCreated, vacancy)
+	c.JSONSimpleSuccess(w, http.StatusCreated, converter.ServiceVacancyToVacancyResponse(createdVacancy))
 
 	log.Info("Create vacancy request completed")
 }

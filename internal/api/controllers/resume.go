@@ -28,30 +28,30 @@ func (c *ResumeController) CreateResume(w http.ResponseWriter, r *http.Request) 
 
 	log.Info("Start create resume request")
 
-	resume := &models.ResumeCreateRequest{}
+	req := &models.ResumeCreateRequest{}
 
-	err := c.ReadRequestBody(r, resume)
+	err := c.ReadRequestBody(r, req)
 	if err != nil {
 		c.JSONSimpleError(w, err.Error(), http.StatusBadRequest)
 
 		return
 	}
 
-	serviceResume, err := converter.ResumeCreateRequestToServiceResume(resume)
+	serviceResume, err := converter.ResumeCreateRequestToServiceResume(req)
 	if err != nil {
 		c.JSONSimpleError(w, err.Error(), http.StatusBadRequest)
 
 		return
 	}
 
-	err = c.resumeService.CreateResume(ctx, serviceResume)
+	createdResume, err := c.resumeService.CreateResume(ctx, serviceResume)
 	if err != nil {
 		c.JSONSimpleError(w, err.Error(), http.StatusInternalServerError)
 
 		return
 	}
 
-	c.JSONSimpleSuccess(w, http.StatusCreated, resume)
+	c.JSONSimpleSuccess(w, http.StatusCreated, converter.ServiceResumeToResumeResponse(createdResume))
 
 	log.Info("Create resume request completed")
 }

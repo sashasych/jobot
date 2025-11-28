@@ -25,12 +25,17 @@ func NewUserService(userRepository repository.UserRepository, employeeRepository
 	return &UserService{userRepository: userRepository, employeeRepository: employeeRepository, employerRepository: employerRepository}
 }
 
-func (s *UserService) CreateUser(ctx context.Context, user *models.User) error {
+func (s *UserService) CreateUser(ctx context.Context, user *models.User) (*models.User, error) {
 	user.ID = uuid.New()
-	user.CreatedAt = time.Now()
-	user.UpdatedAt = time.Now()
+	now := time.Now()
+	user.CreatedAt = now
+	user.UpdatedAt = now
 
-	return s.userRepository.CreateUser(ctx, user)
+	if err := s.userRepository.CreateUser(ctx, user); err != nil {
+		return nil, fmt.Errorf("failed to create user: %w", err)
+	}
+
+	return user, nil
 }
 
 func (s *UserService) GetUser(ctx context.Context, id uuid.UUID) (*models.User, error) {
@@ -87,7 +92,7 @@ func (s *UserService) DeleteUser(ctx context.Context, id uuid.UUID) error {
 	return nil
 }
 
-func (s *UserService) GetUserProfile(ctx context.Context, id uuid.UUID) (*models.UserProfileResponse, error) {
+func (s *UserService) GetUserProfile(ctx context.Context, id uuid.UUID) (*models.UserProfile, error) {
 	user, err := s.GetUser(ctx, id)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get user: %w", err)
@@ -100,14 +105,14 @@ func (s *UserService) GetUserProfile(ctx context.Context, id uuid.UUID) (*models
 			return nil, fmt.Errorf("failed to get employee: %w", err)
 		}
 
-		return &models.UserProfileResponse{User: user, Employee: employee}, nil
+		return &models.UserProfile{User: user, Employee: employee}, nil
 	case "employer":
 		employer, err := s.employerRepository.GetEmployerByUserID(ctx, id)
 		if err != nil {
 			return nil, fmt.Errorf("failed to get employer: %w", err)
 		}
 
-		return &models.UserProfileResponse{User: user, Employer: employer}, nil
+		return &models.UserProfile{User: user, Employer: employer}, nil
 	default:
 		return nil, ErrUserRoleNotFound
 	}
